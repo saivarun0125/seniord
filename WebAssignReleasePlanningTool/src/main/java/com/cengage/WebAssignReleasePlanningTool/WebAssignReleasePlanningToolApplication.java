@@ -1,13 +1,28 @@
 package com.cengage.WebAssignReleasePlanningTool;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.cengage.WebAssignReleasePlanningTool.Assignment;
+
 @SpringBootApplication
-public class WebAssignReleasePlanningToolApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(WebAssignReleasePlanningToolApplication.class, args);
-	}
-
+public class WebAssignReleasePlanningToolApplication implements CommandLineRunner {
+ 
+    @Autowired
+    AssignmentRepository repository;
+     
+    public static void main(String[] args) {
+        SpringApplication.run(WebAssignReleasePlanningToolApplication.class, args);
+    }
+ 
+    @Override
+    public void run(String... args) throws Exception {
+        List<Assignment> assignment = repository.findByName("Acid Basics");
+        assignment.forEach(item -> System.out.println(item));
+         
+    }
 }
