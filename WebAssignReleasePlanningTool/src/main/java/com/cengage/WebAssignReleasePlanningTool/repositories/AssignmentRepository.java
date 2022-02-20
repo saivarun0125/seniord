@@ -1,11 +1,11 @@
-package com.cengage.WebAssignReleasePlanningTool;
+package com.cengage.WebAssignReleasePlanningTool.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.cengage.WebAssignReleasePlanningTool.Assignment;
+import com.cengage.WebAssignReleasePlanningTool.models.Assignment;
 
 import java.util.List;
 

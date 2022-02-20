@@ -1,4 +1,4 @@
-package com.cengage.WebAssignReleasePlanningTool;
+package com.cengage.WebAssignReleasePlanningTool.models;
 
 
 import javax.persistence.Entity;
