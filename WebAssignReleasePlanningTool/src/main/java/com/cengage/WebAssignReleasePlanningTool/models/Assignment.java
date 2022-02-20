@@ -15,6 +15,8 @@ public class Assignment {
     private Long id;
 
     private String name;
+    
+    private String category;
 
     public Assignment() {  
     	
@@ -36,11 +38,20 @@ public class Assignment {
         this.name = name;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
     @Override
     public String toString() {
         return "Assignment{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", category='" + category + '\'' +
                 '}';
     }
 }

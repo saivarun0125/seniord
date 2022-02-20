@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface AssignmentRepository extends JpaRepository<Assignment, Integer> {
     
-    @Query(value = "SELECT * FROM assignments a WHERE a.name = :name", nativeQuery = true)
+    @Query(value = "select a.id, a.name, cat.name as category from assignments a, categories cat where a.category=cat.id and a.name = :name", nativeQuery = true)
     public List<Assignment> findByName(@Param("name") String name);
     
 }
