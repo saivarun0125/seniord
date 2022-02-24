@@ -2,12 +2,29 @@ package com.cengage.WebAssignReleasePlanningTool.DueDateReport;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "assignments")
 public class Assignment {
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+	
 	private String category;
 	private Date startDate;
 	private Date endDate;
 	private int daysAvailable;
 	private int rosterCount;
+
+    public Assignment() {  
+    	
+    }
 	
 	public Assignment(String _category, Date _startDate, Date _endDate, int _daysAvailable, int _rosterCount)
 	{
@@ -67,4 +84,16 @@ public class Assignment {
 	{
 		return rosterCount;
 	}
+
+    @Override
+    public String toString() {
+        return "Assignment{" +
+                "id=" + id +
+                ", category='" + category + '\'' +
+                ", startDate='" + startDate + '\'' +
+                ", endDate='" + endDate + '\'' +
+                ", daysAvailable='" + daysAvailable + '\'' +
+                ", rosterCount='" + rosterCount + '\'' +
+                '}';
+    }
 }
