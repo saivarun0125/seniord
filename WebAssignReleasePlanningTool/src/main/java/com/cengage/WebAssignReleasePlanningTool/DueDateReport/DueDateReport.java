@@ -16,6 +16,12 @@ public class DueDateReport {
 		retrieveAssignments(day);
 	}
 	
+	//used for testing
+	public DueDateReport(List<Assignment> _assignments)
+	{
+		assignments = _assignments;
+	}
+	
 	private void retrieveAssignments(Date day)
 	{
 		//pull from database all assignments for the given day and load the into the assignments list
