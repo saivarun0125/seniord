@@ -2,7 +2,6 @@ package com.cengage.WebAssignReleasePlanningTool.DueDateReport;
 
 import java.util.Date;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,7 +10,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "assignments")
-public class Assignment {
+public class Assignment implements Comparable<Assignment> {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -96,4 +95,40 @@ public class Assignment {
                 ", rosterCount='" + rosterCount + '\'' +
                 '}';
     }
+
+	@Override
+	public int compareTo(Assignment other)
+	{
+		//placeholder implementation
+		
+		//first filter by category
+		
+		//first check for exam
+		if(category.toLowerCase().contains("exam") && !other.category.toLowerCase().contains("exam"))
+		{
+			return -1;
+		}
+		else if(!category.toLowerCase().contains("exam") && other.category.toLowerCase().contains("exam"))
+		{
+			return 1;
+		}
+		//then quiz
+		else if(category.toLowerCase().contains("quiz") && !other.category.toLowerCase().contains("quiz"))
+		{
+			return -1;
+		}
+		else if(!category.toLowerCase().contains("quiz") && other.category.toLowerCase().contains("quiz"))
+		{
+			return 1;
+		}
+		
+		//then check by days available
+		int dayCompare = new Integer(daysAvailable).compareTo(other.daysAvailable);
+		
+		if(dayCompare != 0)
+			return dayCompare;
+		
+		//then check roster count
+		return new Integer(rosterCount).compareTo(other.rosterCount);
+	}
 }

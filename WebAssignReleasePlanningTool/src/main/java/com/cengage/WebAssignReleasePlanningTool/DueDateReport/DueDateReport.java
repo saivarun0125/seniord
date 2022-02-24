@@ -1,6 +1,8 @@
 package com.cengage.WebAssignReleasePlanningTool.DueDateReport;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -45,15 +47,11 @@ public class DueDateReport {
 			
 		}
 		
-		//right now, the best assignment is determined only by roster count for testing, we should likely implement a CompareTo method in assignment to make sorting easier 
-		Assignment best = null;
-		for(Assignment a : assignmentsInRange)
-		{
-			if(best == null && best.getRosterCount() > a.getRosterCount())
-			{
-				best = a;
-			}
-		}
+		//sort assignments from best to release during to worst
+		Collections.sort(assignmentsInRange);
+		
+		//placeholder: for now we get the best assignment and set is as a window
+		Assignment best = assignmentsInRange.get(0);
 		
 		return new ReleaseWindow(best.getStartDate(), best.getEndDate());
 	}
