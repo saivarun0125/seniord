@@ -31,7 +31,31 @@ public class DueDateReport {
 	public ReleaseWindow generateBestReleaseWindow(Date startDate, Date EndDate)
 	{
 		//get best release window in the given date range
-		throw new NotYetImplementedException();
+		//throw new NotYetImplementedException();
+		
+		//placeholder implementation below, this is not how the method will actually work I just used this for testing
+		List<Assignment> assignmentsInRange = new ArrayList<Assignment>();
+		
+		for(Assignment a : assignments)
+		{
+			if(a.getStartDate().compareTo(startDate) <= 0 && a.getEndDate().compareTo(EndDate) >= 0)
+			{
+				assignmentsInRange.add(a);
+			}
+			
+		}
+		
+		//right now, the best assignment is determined only by roster count for testing, we should likely implement a CompareTo method in assignment to make sorting easier 
+		Assignment best = null;
+		for(Assignment a : assignmentsInRange)
+		{
+			if(best == null && best.getRosterCount() > a.getRosterCount())
+			{
+				best = a;
+			}
+		}
+		
+		return new ReleaseWindow(best.getStartDate(), best.getEndDate());
 	}
 	
 	public List<ReleaseWindow> generateReleaseWindows(Date startDate, Date endDate)
