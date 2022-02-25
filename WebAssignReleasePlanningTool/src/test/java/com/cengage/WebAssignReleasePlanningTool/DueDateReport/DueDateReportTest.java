@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.cfg.NotYetImplementedException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,6 +19,10 @@ class DueDateReportTest {
 	@Test
 	void constructorTest()
 	{		
+		//default constructor
+		DueDateReport ddr = new DueDateReport();
+		assertTrue(ddr instanceof DueDateReport);
+		
 		//create a due date report with the list
 		Date d1 = new Date();
 		d1.setDate(25);
@@ -40,12 +45,21 @@ class DueDateReportTest {
 		aList.add(a3);
 		aList.add(a4);
 		
-		DueDateReport ddr = new DueDateReport(aList);
+		ddr = new DueDateReport(aList);
 		
 		assertEquals(ddr.assignments.get(0), aList.get(0));
 		assertEquals(ddr.assignments.get(1), aList.get(1));
 		assertEquals(ddr.assignments.get(2), aList.get(2));
 		assertEquals(ddr.assignments.get(3), aList.get(3));
+		
+		try
+		{
+			ddr = new DueDateReport(d1);
+		}
+		catch (Exception e)
+		{
+			assertTrue(e instanceof NotYetImplementedException);
+		}
 	}
 	
 	@Test
@@ -79,5 +93,14 @@ class DueDateReportTest {
 		assertEquals(rw.priorityScore, 0);
 		assertEquals(rw.getStartDate(), d1);
 		assertEquals(rw.getEndDate(), d2);
+		
+		try
+		{
+			ddr.generateReleaseWindows(d1, d2);
+		} 
+		catch (Exception e)
+		{
+			assertTrue(e instanceof NotYetImplementedException);
+		}
 	}
 }
