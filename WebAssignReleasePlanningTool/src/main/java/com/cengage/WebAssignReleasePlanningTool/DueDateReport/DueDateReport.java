@@ -44,16 +44,14 @@ public class DueDateReport {
 	private void retrieveAssignments(Date day)
 	{
 		//pull from database all assignments for the given day and load the into the assignments list
-		System.out.print(repository);
-		List<Assignment> allAssignments = repository.findAll();
-		
-		for(Assignment a : allAssignments)
-		{
-			if(a.getStartDate().compareTo(day) >= 0 && a.getEndDate().compareTo(day) <= 0)
-			{
-				assignments.add(a);
-			}
-		}
+		throw new NotYetImplementedException();
+		/*
+		 * System.out.print(repository); List<Assignment> allAssignments =
+		 * repository.findAll();
+		 * 
+		 * for(Assignment a : allAssignments) { if(a.getStartDate().compareTo(day) >= 0
+		 * && a.getEndDate().compareTo(day) <= 0) { assignments.add(a); } }
+		 */
 	}
 	
 	public ReleaseWindow generateBestReleaseWindow(Date startDate, Date EndDate)
