@@ -20,7 +20,7 @@ public class AssignmentController  {
     }
 
     @GetMapping("/assignment/{name}")
-    public List<Assignment> getAssignmentById(@PathVariable String name){
+    public List<Assignment> getAssignmentByName(@PathVariable String name){
         return assignmentRespository.findByName(name);
     }
 

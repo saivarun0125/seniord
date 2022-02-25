@@ -13,7 +13,7 @@ import javax.persistence.Table;
 public class Assignment implements Comparable<Assignment> {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 	
 	private String category;
 	private Date startDate;
@@ -32,6 +32,11 @@ public class Assignment implements Comparable<Assignment> {
 		setEndDate(_endDate);
 		setDaysAvailable(_daysAvailable);
 		setRosterCount(_rosterCount);
+	}
+	
+	public Integer getAssignmentId()
+	{
+		return id;
 	}
 	
 	public void setCategory(String _category)
