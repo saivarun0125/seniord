@@ -3,17 +3,14 @@
  */
 package com.cengage.WebAssignReleasePlanningTool.DueDateReport;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 /**
@@ -32,7 +29,7 @@ class AssignmentTest {
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@Before
+	@BeforeEach
 	void setUp() throws Exception {
 		a = new Assignment();
 		Date end = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse("2020-03-14 12:00:00");
@@ -118,7 +115,7 @@ class AssignmentTest {
 	void testSetEndDate() throws ParseException {
 		Date endStart = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse("2020-05-16 06:15:00");
 		assertNull(a.getEndDate());
-		a.setStartDate(endStart);
+		a.setEndDate(endStart);
 		assertNotNull(a.getEndDate());
 	}
 
@@ -130,7 +127,7 @@ class AssignmentTest {
 	void testGetEndDate() throws ParseException {
 		Date endStart = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse("2020-05-16 06:15:00");
 		assertNull(a.getEndDate());
-		a.setStartDate(endStart);
+		a.setEndDate(endStart);
 		assertEquals(endStart, a.getEndDate());
 	}
 
@@ -152,7 +149,7 @@ class AssignmentTest {
 		int newDaysAvailable = 10;
 		assertEquals(1, b.getDaysAvailable());
 		b.setDaysAvailable(newDaysAvailable);
-		assertNotEquals(10, b.getDaysAvailable());
+		assertEquals(newDaysAvailable, b.getDaysAvailable());
 	}
 
 	/**
@@ -162,7 +159,7 @@ class AssignmentTest {
 	void testSetRosterCount() {
 		int newRosterCount = 10;
 		b.setRosterCount(newRosterCount);
-		assertNotEquals(30, b.getRosterCount());
+		assertEquals(newRosterCount, b.getRosterCount());
 	}
 
 	/**
@@ -173,7 +170,7 @@ class AssignmentTest {
 		int newRosterCount = 10;
 		assertEquals(30, b.getRosterCount());
 		b.setRosterCount(newRosterCount);
-		assertNotEquals(10, b.getRosterCount());
+		assertEquals(newRosterCount, b.getRosterCount());
 	}
 
 	/**
@@ -181,8 +178,8 @@ class AssignmentTest {
 	 */
 	@Test
 	void testToString() {
-		assertEquals(null, a.toString());
-		assertEquals(null, b.toString());
+		assertEquals("Assignment{id=null, category='null', startDate='null', endDate='null', daysAvailable='0', rosterCount='0'}", a.toString());
+		assertEquals("Assignment{id=null, category='Test', startDate='Wed Apr 15 00:30:00 EDT 2020', endDate='Sat Mar 14 00:00:00 EDT 2020', daysAvailable='1', rosterCount='30'}", b.toString());
 	}
 
 	/**
@@ -190,7 +187,7 @@ class AssignmentTest {
 	 */
 	@Test
 	void testCompareTo() {
-		assertNotEquals(0, a.compareTo(b));
+		assertTrue(a.compareTo(b) < 0);
 		assertEquals(0, a.compareTo(a));
 		assertEquals(0, b.compareTo(b));
 	}

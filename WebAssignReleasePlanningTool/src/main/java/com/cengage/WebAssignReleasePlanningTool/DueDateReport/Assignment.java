@@ -107,24 +107,25 @@ public class Assignment implements Comparable<Assignment> {
 		//placeholder implementation
 		
 		//first filter by category
-		
-		//first check for exam
-		if(category.toLowerCase().contains("exam") && !other.category.toLowerCase().contains("exam"))
-		{
-			return -1;
-		}
-		else if(!category.toLowerCase().contains("exam") && other.category.toLowerCase().contains("exam"))
-		{
-			return 1;
-		}
-		//then quiz
-		else if(category.toLowerCase().contains("quiz") && !other.category.toLowerCase().contains("quiz"))
-		{
-			return -1;
-		}
-		else if(!category.toLowerCase().contains("quiz") && other.category.toLowerCase().contains("quiz"))
-		{
-			return 1;
+		if(category != null) {
+			//first check for exam
+			if(category.toLowerCase().contains("exam") && !other.category.toLowerCase().contains("exam"))
+			{
+				return -1;
+			}
+			else if(!category.toLowerCase().contains("exam") && other.category.toLowerCase().contains("exam"))
+			{
+				return 1;
+			}
+			//then quiz
+			else if(category.toLowerCase().contains("quiz") && !other.category.toLowerCase().contains("quiz"))
+			{
+				return -1;
+			}
+			else if(!category.toLowerCase().contains("quiz") && other.category.toLowerCase().contains("quiz"))
+			{
+				return 1;
+			}
 		}
 		
 		//then check by days available
