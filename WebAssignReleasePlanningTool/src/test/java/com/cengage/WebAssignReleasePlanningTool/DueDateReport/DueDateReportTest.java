@@ -51,30 +51,15 @@ class DueDateReportTest {
 		assertEquals(ddr.assignments.get(1), aList.get(1));
 		assertEquals(ddr.assignments.get(2), aList.get(2));
 		assertEquals(ddr.assignments.get(3), aList.get(3));
-		
-		try
-		{
-			ddr = new DueDateReport(d1);
-		}
-		catch (Exception e)
-		{
-			assertTrue(e instanceof NotYetImplementedException);
-		}
 	}
 	
 	@Test
 	void getBestReleaseWindowTest()
 	{
 		//create a due date report with the list
-		Date d1 = new Date();
-		d1.setDate(25);
-		d1.setMonth(2);
-		d1.setYear(2022);
+		Date d1 = new Date(2022, 2 ,25);
 		
-		Date d2 = new Date();
-		d2.setDate(26);
-		d2.setMonth(2);
-		d2.setYear(2022);
+		Date d2 = new Date(2022, 2, 26);
 		
 		Assignment a1 = new Assignment("a1", d1, d2, 1, 1);
 		Assignment a2 = new Assignment("a2", d1, d2, 1, 1);
@@ -92,15 +77,22 @@ class DueDateReportTest {
 		ReleaseWindow rw = ddr.generateBestReleaseWindow(d1, d2);
 		assertEquals(rw.priorityScore, 0);
 		assertEquals(rw.getStartDate(), d1);
-		assertEquals(rw.getEndDate(), d2);
+		assertEquals(rw.getEndDate(), d2);	
+	}
+	
+	@Test
+	void generateReleaseWindowsTest()
+	{
+		//create a report for march 1st 2022
+		DueDateReport ddr = new DueDateReport(new Date(2022, 2, 1));
+		assertNotNull(ddr.assignments);
 		
-		try
-		{
-			ddr.generateReleaseWindows(d1, d2);
-		} 
-		catch (Exception e)
-		{
-			assertTrue(e instanceof NotYetImplementedException);
-		}
+		//System.out.println(new Date(2022, 2, 1, 0, 0) + " " + new Date(2022, 2, 1, 24, 0));
+		List<ReleaseWindow> rw = ddr.generateReleaseWindows(new Date(2022, 2, 1, 0, 0), new Date(2022, 2, 1, 24, 0));
+		assertNotNull(rw);
+		//System.out.print(rw.get(0).getStartDate() + " " + rw.get(0).getEndDate());
+		assertEquals(rw.size(), 93); // 24 hours in day * 4 = 96 quarter hours - 3 since you need a full hour to start the release so you can't start in the last 45 minutes
+		assertTrue(rw.get(rw.size() - 1).startDate.compareTo(new Date(2022, 2, 1, 4, 0)) >= 0);
+		assertTrue(rw.get(rw.size() - 1).startDate.compareTo(new Date(2022, 2, 1, 5, 0)) <= 0);
 	}
 }

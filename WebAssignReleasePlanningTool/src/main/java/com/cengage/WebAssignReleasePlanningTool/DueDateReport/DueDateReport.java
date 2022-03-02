@@ -2,8 +2,11 @@ package com.cengage.WebAssignReleasePlanningTool.DueDateReport;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.List;
 
 import org.hibernate.cfg.NotYetImplementedException;
@@ -24,15 +27,16 @@ public class DueDateReport {
     @Autowired
     AssignmentRepository repository;
 	
-    public DueDateReport()
+    public DueDateReport() 
     {
-    	
+    	assignments = new ArrayList<Assignment>();
     }
     
 	public DueDateReport(Date day)
 	{
 		assignments = new ArrayList<Assignment>();
-		retrieveAssignments(day);
+		//retrieveAssignments(day);
+		generateAssignmentsTest();
 	}
 	
 	//used for testing
@@ -44,14 +48,17 @@ public class DueDateReport {
 	private void retrieveAssignments(Date day)
 	{
 		//pull from database all assignments for the given day and load the into the assignments list
-		throw new NotYetImplementedException();
-		/*
-		 * System.out.print(repository); List<Assignment> allAssignments =
-		 * repository.findAll();
-		 * 
-		 * for(Assignment a : allAssignments) { if(a.getStartDate().compareTo(day) >= 0
-		 * && a.getEndDate().compareTo(day) <= 0) { assignments.add(a); } }
-		 */
+		//System.out.print(repository);
+		List<Assignment> allAssignments = repository.findAll();
+		 
+		 for(Assignment a : allAssignments)
+		 {
+			 if(a.getStartDate().compareTo(day) >= 0 && a.getEndDate().compareTo(day) <= 0)
+			 {
+				 assignments.add(a);
+			 }
+		 }
+		 
 	}
 	
 	public ReleaseWindow generateBestReleaseWindow(Date startDate, Date EndDate)
@@ -81,7 +88,91 @@ public class DueDateReport {
 	
 	public List<ReleaseWindow> generateReleaseWindows(Date startDate, Date endDate)
 	{
+		List<ReleaseWindow> windows = new ArrayList<ReleaseWindow>();
+		
 		//generate all release windows
-		throw new NotYetImplementedException();
+
+		//for now create a list of 1 hour windows in 15 minute increments and put them in a list
+		Date windowStart = startDate;
+		Date windowEnd = new Date(windowStart.getTime() +  3600000); //3600000 = 1 hour make this a static const later
+		
+		//round up to nearest quarter hour
+		windowStart.setMinutes(windowStart.getMinutes() + windowStart.getMinutes() % 15);
+		windowEnd.setMinutes(windowEnd.getMinutes() + windowEnd.getMinutes() % 15);
+		
+		while(windowEnd.compareTo(endDate) <= 0)
+		{
+			ReleaseWindow rw = new ReleaseWindow(windowStart, windowEnd);
+			
+			windows.add(rw);
+			
+			windowStart = new Date(windowStart.getTime() + 900000); //900000 milliseconds = 15 minutes, make this a static const later
+			windowEnd = new Date(windowEnd.getTime() + 900000);
+			
+			System.out.println("f" + windowEnd);
+		}
+		
+		windows = orderReleaseWindowsByPriority(windows);	
+		
+		return windows; //just return a list of the release windows now
+	}
+	
+	private List<ReleaseWindow> orderReleaseWindowsByPriority(List<ReleaseWindow> inList)
+	{
+		List<ReleaseWindow> outList = new ArrayList<ReleaseWindow>();
+		
+		HashMap<ReleaseWindow, List<Assignment>> dict = new HashMap<ReleaseWindow, List<Assignment>>();
+		
+		//initialize dictionary
+		for(ReleaseWindow rw : inList)
+		{
+			//add a new key for releaseWindow
+			dict.put(rw, new ArrayList<Assignment>());
+			
+			//add all assignments in the time window
+			for(Assignment a : assignments)
+			{
+				if((a.getStartDate().compareTo(rw.startDate) <= 0 && a.getEndDate().compareTo(rw.startDate) >= 0)
+					|| (a.getStartDate().compareTo(rw.endDate) <= 0 && a.getEndDate().compareTo(rw.endDate) >= 0))
+				{
+					dict.get(rw).add(a);
+				}
+			}
+		}
+		
+		//sort list
+		//note: inefficient sort and does not take all factors into acount, will need to be changed later
+		while(outList.size() != inList.size())
+		{
+			ReleaseWindow lowest = null;
+			for(ReleaseWindow key : dict.keySet())
+			{
+				if(!outList.contains(key) && (lowest == null || dict.get(key).size() < dict.get(lowest).size()))
+				{
+					lowest = key;
+				}
+			}
+			
+			System.out.print(lowest.startDate + " " + dict.get(lowest).size() + " ");
+			for(Assignment a : dict.get(lowest))
+			{
+				System.out.print(a.getCategory() + " ");
+			}
+			System.out.println();
+			outList.add(lowest);
+		}
+		
+		return outList;
+	}
+	
+	//classes below are temporary test classes, they should be deleted once connection to repository is working correctly
+	public void generateAssignmentsTest()
+	{
+		//generate a set of assignments for testing
+		assignments.add(new Assignment("homework 1", new Date(2022, 2, 1, 1, 0), new Date(2022, 2, 1, 4, 0), 1, 25));
+		assignments.add(new Assignment("test 1", new Date(2022, 2, 1, 4, 0), new Date(2022, 2, 1, 5, 0), 1, 25));
+		assignments.add(new Assignment("homework 2", new Date(2022, 2, 1, 5, 0), new Date(2022, 2, 1, 6, 0), 1, 25));
+		assignments.add(new Assignment("homework 3", new Date(2022, 2, 2, 5, 0), new Date(2022, 2, 2, 6, 0), 1, 25));
+		assignments.add(new Assignment("homework 4", new Date(2022, 2, 1, 5, 45), new Date(2022, 2, 1, 6, 0), 1, 25));
 	}
 }
