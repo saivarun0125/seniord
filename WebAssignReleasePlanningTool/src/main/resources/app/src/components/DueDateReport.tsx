@@ -15,9 +15,12 @@ import {
     TabPanel, 
 } from 'react-magma-dom';
 
+import RawData from "./RawData";
+import ReleaseWindows from "./ReleaseWindows";
+
 export default function DueDateReportMagma() {
     const [validated, setValidated] = useState(false);
-    const [activeTab, setActiveTab] = useState(0);
+    const [duration, setDuration] = useState(0);
     const [errorMessage, setErrorMessage] = useState("");
     const [selectedItem, updateSelectedItem] = React.useState('');
 
@@ -42,8 +45,7 @@ export default function DueDateReportMagma() {
     };
 
     function onSelectedItemChange(changes: any) {
-      updateSelectedItem(changes.selectedItem);
-      console.log(changes.selectedItem);
+        setDuration(changes.selectedItem.value);
     }
   
     return (
@@ -72,7 +74,7 @@ export default function DueDateReportMagma() {
             </Row>
             <Row>
                 <Col md={2}>
-                    <Input labelText="Duration" />
+                    <Input labelText="Duration" value={duration}/>
                 </Col>
                 <Col md={2}>
                     <Select id="release" labelText="Release" items={options} onSelectedItemChange={onSelectedItemChange} />
@@ -86,10 +88,10 @@ export default function DueDateReportMagma() {
                 </Tabs>
                 <TabPanelsContainer>
                     <TabPanel>
-                    <div>Release Windows</div>
+                    <ReleaseWindows />
                     </TabPanel>
                     <TabPanel>
-                    <div>Raw Data</div>
+                    <RawData />
                     </TabPanel>
                 </TabPanelsContainer>
             </TabsContainer>
