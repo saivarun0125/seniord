@@ -1,68 +1,98 @@
 import * as React from "react";
 import { useState } from "react";
-import { Button, Container, Form, Row, Col } from "react-bootstrap";
-import Dropdown from 'react-bootstrap/Dropdown';
+import { Row, Col } from "react-bootstrap";
+import { 
+    Button, 
+    Input, 
+    Container, 
+    Form,
+    Select, 
+    TabsAlignment,
+    TabsContainer,
+    Tabs,
+    Tab,
+    TabPanelsContainer,
+    TabPanel, 
+} from 'react-magma-dom';
 
-export default function DueDateReport() {
+export default function DueDateReportMagma() {
     const [validated, setValidated] = useState(false);
+    const [activeTab, setActiveTab] = useState(0);
+    const [errorMessage, setErrorMessage] = useState("");
+    const [selectedItem, updateSelectedItem] = React.useState('');
+
+    const options = [
+        {
+          label: "release #1",
+          value: "25"
+        },
+        {
+          label: "release #2",
+          value: "60"
+        },
+        {
+          label: "release #3",
+          value: "45"
+        }
+      ];
+  
   
     const handleSubmit = (event:  React.FormEvent) => {
       setValidated(true);
     };
+
+    function onSelectedItemChange(changes: any) {
+      updateSelectedItem(changes.selectedItem);
+      console.log(changes.selectedItem);
+    }
   
     return (
     <Container>
-        <Form noValidate validated={validated} onSubmit={handleSubmit}>
-            <Row className="mb-3">
-            <Form.Group as={Col} md="4" controlId="startDate">
-                <Form.Label>Start:</Form.Label>
-                <Form.Control
-                required
-                type="text"
-                placeholder="Start"
-                defaultValue=""
-                />
-                <Form.Control.Feedback></Form.Control.Feedback>
-            </Form.Group>
-            </Row>
-            <Row>
-            <Form.Group as={Col} md="4" controlId="endDate">
-                <Form.Label>End:</Form.Label>
-                <Form.Control
-                required
-                type="text"
-                placeholder="End"
-                defaultValue=""
-                />
-                <Form.Control.Feedback></Form.Control.Feedback>
-            </Form.Group>
-            </Row>
-            <Row>
-            <Form.Group as={Col} md="4" controlId="duration">
-                <Form.Label>Duration</Form.Label>
-                <Form.Control
-                required
-                type="text"
-                placeholder="Duration"
-                defaultValue=""
-                />
-            </Form.Group>
-            <Form.Group as={Col} md="4" controlId="duration">
-                <Form.Label>Release:</Form.Label>
-                <Form.Select aria-label="Select a release">
-                    <option>Select a release</option>
-                    <option value="1">release #1</option>
-                    <option value="2">release #2</option>
-                    <option value="3">release #3</option>
-                </Form.Select>
-            </Form.Group>
-            </Row>
+        <Form 
+            header="Due Date Report"
+            errorMessage={errorMessage}
+            onSubmit={handleSubmit}
+            actions={
             <Row style={{padding: "1rem!important"}}>
-                <Form.Group as={Col} md="4" controlId="Generate">
-                <Button type="submit">Generate</Button>
-                </Form.Group>
+                <Col md={2}>
+                    <Button>Generate</Button>
+                </Col>
+            </Row>
+            }
+        >
+            <Row className="mb-3">
+                <Col md={2}>
+                    <Input labelText="Start" />
+                </Col>
+            </Row>
+            <Row>
+                <Col md={2}>
+                    <Input labelText="End" />
+                </Col>
+            </Row>
+            <Row>
+                <Col md={2}>
+                    <Input labelText="Duration" />
+                </Col>
+                <Col md={2}>
+                    <Select id="release" labelText="Release" items={options} onSelectedItemChange={onSelectedItemChange} />
+                </Col>
             </Row>
         </Form>
+            <TabsContainer activeIndex={0} TabsAlignment={TabsAlignment.center}>
+                <Tabs aria-label="Sample Tabs">
+                    <Tab>Release Windows</Tab>
+                    <Tab>Raw Data</Tab>
+                </Tabs>
+                <TabPanelsContainer>
+                    <TabPanel>
+                    <div>Release Windows</div>
+                    </TabPanel>
+                    <TabPanel>
+                    <div>Raw Data</div>
+                    </TabPanel>
+                </TabPanelsContainer>
+            </TabsContainer>
       </Container>
     );
   }
