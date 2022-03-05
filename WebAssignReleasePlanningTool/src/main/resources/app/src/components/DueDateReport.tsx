@@ -3,7 +3,9 @@ import { useState } from "react";
 import { Row, Col } from "react-bootstrap";
 import { 
     Button, 
+    DatePicker,
     Input, 
+    InputType,
     Container, 
     Form,
     Select, 
@@ -41,7 +43,7 @@ export default function DueDateReportMagma() {
   
   
     const handleSubmit = (event:  React.FormEvent) => {
-      setValidated(true);
+        setValidated(true);
     };
 
     function onSelectedItemChange(changes: any) {
@@ -64,17 +66,17 @@ export default function DueDateReportMagma() {
         >
             <Row className="mb-3">
                 <Col md={2}>
-                    <Input labelText="Start" />
+                    <DatePicker labelText="Start" />
                 </Col>
             </Row>
             <Row>
                 <Col md={2}>
-                    <Input labelText="End" />
+                    <DatePicker labelText="End" />
                 </Col>
             </Row>
             <Row>
                 <Col md={2}>
-                    <Input labelText="Duration" value={duration}/>
+                    <Input labelText="Duration" type={InputType.number} value={duration}/>
                 </Col>
                 <Col md={2}>
                     <Select id="release" labelText="Release" items={options} onSelectedItemChange={onSelectedItemChange} />
