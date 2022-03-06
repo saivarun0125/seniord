@@ -1,8 +1,11 @@
 import * as React from "react";
 import { useState } from "react";
+import axios, { AxiosError } from "axios";
+
 import { Row, Col } from "react-bootstrap";
 import { 
     Button, 
+    ButtonType,
     DatePicker,
     Input, 
     InputType,
@@ -21,10 +24,8 @@ import RawData from "./RawData";
 import ReleaseWindows from "./ReleaseWindows";
 
 export default function DueDateReportMagma() {
-    const [validated, setValidated] = useState(false);
     const [duration, setDuration] = useState(0);
     const [errorMessage, setErrorMessage] = useState("");
-    const [selectedItem, updateSelectedItem] = React.useState('');
 
     const options = [
         {
@@ -42,8 +43,13 @@ export default function DueDateReportMagma() {
       ];
   
   
-    const handleSubmit = (event:  React.FormEvent) => {
-        setValidated(true);
+    const handleSubmit = async () => {
+        const url = "http://localhost:8080/assignment/Acid%20Basics";
+        axios.get(url)
+            .then((response) => response.data)
+            .then((data) => {
+                console.log(data);
+            });
     };
 
     function onSelectedItemChange(changes: any) {
@@ -55,13 +61,9 @@ export default function DueDateReportMagma() {
         <Form 
             header="Due Date Report"
             errorMessage={errorMessage}
-            onSubmit={handleSubmit}
             actions={
-            <Row style={{padding: "1rem!important"}}>
-                <Col md={2}>
-                    <Button>Generate</Button>
-                </Col>
-            </Row>
+            <>
+            </>
             }
         >
             <Row className="mb-3">
@@ -80,6 +82,11 @@ export default function DueDateReportMagma() {
                 </Col>
                 <Col md={2}>
                     <Select id="release" labelText="Release" items={options} onSelectedItemChange={onSelectedItemChange} />
+                </Col>
+            </Row>
+            <Row style={{padding: "1rem!important"}}>
+                <Col md={2}>
+                    <Button onClick={handleSubmit}>Generate</Button>
                 </Col>
             </Row>
         </Form>
