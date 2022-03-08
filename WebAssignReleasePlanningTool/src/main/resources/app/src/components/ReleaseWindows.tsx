@@ -62,35 +62,13 @@ export const options = {
   },
 };
 
-const labels = ['12:00 am', 
-'1:00 am', 
-'2:00 am', 
-'3:00 am', 
-'4:00 am', 
-'5:00 am', 
-'6:00 am-7:00 am', 
-'8:00 am', 
-'9:00 am', 
-'10:00 am', 
-'11:00 am', 
-'12:00 pm', 
-'1:00 pm', 
-'2:00 pm', 
-'3:00 pm', 
-'4:00 pm', 
-'5:00 pm', 
-'6:00 pm', 
-'7:00 pm', 
-'8:00 pm', 
-'9:00 pm-10:00 pm', 
-'11:00 pm',
-];
 
-const dataSet = [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, .5, 0];
-const randData = labels.map(() => Math.random());
+export default function ReleaseWindows(props:{labels: any[], releaseWindows: any[], usage: any[]}) {
+  
+const randData = props.labels.map(() => Math.random());
 
 const data = {
-  labels,
+  labels: props.labels,
   datasets: [
     {
       type: 'line' as const,
@@ -98,13 +76,13 @@ const data = {
       borderColor: 'rgb(255, 99, 132)',
       borderWidth: 2,
       fill: false,
-      data: labels.map(() => Math.random()),
+      data: props.labels.map(() => randData),
     },
     {
       type: 'bar' as const,
-      label: 'Release Windows',
+      label: 'Priority',
       backgroundColor: 'rgb(75, 192, 192)',
-      data: dataSet,
+      data: props.releaseWindows,
       borderColor: 'white',
       borderWidth: 2,
     },
@@ -112,7 +90,6 @@ const data = {
 };
 
 
-export default function ReleaseWindows() {
   const printDatasetAtEvent = (dataset: InteractionItem[]) => {
     if (!dataset.length) return;
 
@@ -126,7 +103,7 @@ export default function ReleaseWindows() {
 
     const { datasetIndex, index } = element[0];
 
-    console.log(data.labels[index], data.datasets[datasetIndex].data[index]);
+    console.log(props.labels[index], data.datasets[datasetIndex].data[index]);
   };
 
   const printElementsAtEvent = (elements: InteractionItem[]) => {
