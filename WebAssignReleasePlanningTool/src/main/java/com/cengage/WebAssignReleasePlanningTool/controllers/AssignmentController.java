@@ -14,7 +14,7 @@ public class AssignmentController  {
     @Autowired
     AssignmentRepository assignmentRespository;
 
-    @GetMapping("/assignment")
+    @GetMapping("/test")
     public List<Assignment> getAssignments(){
         return assignmentRespository.findAll();
     }

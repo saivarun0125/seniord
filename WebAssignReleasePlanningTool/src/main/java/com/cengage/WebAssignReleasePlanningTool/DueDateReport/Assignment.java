@@ -100,6 +100,16 @@ public class Assignment implements Comparable<Assignment> {
                 ", rosterCount='" + rosterCount + '\'' +
                 '}';
     }
+    
+    public boolean isTest()
+    {
+    	return category.toLowerCase().contains("test") || category.toLowerCase().contains("exam");
+    }
+    
+    public boolean isQuiz()
+    {
+    	return category.toLowerCase().contains("quiz");
+    }
 
 	@Override
 	public int compareTo(Assignment other)
@@ -109,20 +119,20 @@ public class Assignment implements Comparable<Assignment> {
 		//first filter by category
 		if(category != null) {
 			//first check for exam
-			if(category.toLowerCase().contains("exam") && !other.category.toLowerCase().contains("exam"))
+			if(isTest() && !other.isTest())
 			{
 				return -1;
 			}
-			else if(!category.toLowerCase().contains("exam") && other.category.toLowerCase().contains("exam"))
+			else if(!isTest() && other.isTest())
 			{
 				return 1;
 			}
 			//then quiz
-			else if(category.toLowerCase().contains("quiz") && !other.category.toLowerCase().contains("quiz"))
+			else if(isQuiz() && !other.isQuiz())
 			{
 				return -1;
 			}
-			else if(!category.toLowerCase().contains("quiz") && other.category.toLowerCase().contains("quiz"))
+			else if(!isQuiz() && other.isQuiz())
 			{
 				return 1;
 			}

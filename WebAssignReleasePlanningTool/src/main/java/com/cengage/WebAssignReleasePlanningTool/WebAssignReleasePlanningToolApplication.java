@@ -22,7 +22,7 @@ public class WebAssignReleasePlanningToolApplication implements CommandLineRunne
  
     @Override
     public void run(String... args) throws Exception {
-        List<Assignment> assignment = repository.findByName("Acid Basics");
+        List<Assignment> assignment = repository.findByName("Weak Bases");
         assignment.forEach(item -> System.out.println(item));
          
     }

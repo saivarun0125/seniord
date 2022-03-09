@@ -16,10 +16,20 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.cengage.WebAssignReleasePlanningTool.repositories.AssignmentRepository;
 
+/**
+ * A Due Date Report is the output of the Due Date Report Module.  A report consists of
+ * either a release window containing the optimal release time or an ordered list of
+ * release windows ordered from best to worst.
+ * 
+ * @author Adam Schneider
+ *
+ */
 @Component
+@Transactional
 public class DueDateReport {
 
 	public List<Assignment> assignments;
@@ -27,24 +37,38 @@ public class DueDateReport {
     @Autowired
     AssignmentRepository repository;
 	
+    /**
+     * Default constructor
+     */
     public DueDateReport() 
     {
     	assignments = new ArrayList<Assignment>();
     }
     
+    /**
+     * Constructs a Due Date Report for a given day
+     * @param day the day to create a report for
+     */
 	public DueDateReport(Date day)
 	{
 		assignments = new ArrayList<Assignment>();
-		//retrieveAssignments(day);
+		retrieveAssignments(day);
 		generateAssignmentsTest();
 	}
 	
-	//used for testing
+	/**
+	 * Constructs a Due Date Report with a preexisting list of assignments
+	 * @param _assignments the list of assignments for the Due Date Report
+	 */
 	public DueDateReport(List<Assignment> _assignments)
 	{
 		assignments = _assignments;
 	}
 	
+	/**
+	 * Retrieves a list of all assignments on a given day and loads it in to the assignments variable
+	 * @param day the day to retrieve the assignments on
+	 */
 	private void retrieveAssignments(Date day)
 	{
 		//pull from database all assignments for the given day and load the into the assignments list
@@ -61,6 +85,12 @@ public class DueDateReport {
 		 
 	}
 	
+	/**
+	 * Finds the best release window within a range
+	 * @param startDate start of the range
+	 * @param EndDate end of the range
+	 * @return the best window within the given range
+	 */
 	public ReleaseWindow generateBestReleaseWindow(Date startDate, Date EndDate)
 	{
 		//get best release window in the given date range
@@ -86,6 +116,12 @@ public class DueDateReport {
 		return new ReleaseWindow(best.getStartDate(), best.getEndDate());
 	}
 	
+	/**
+	 * Generates an ordered list of Release Windows within a given range
+	 * @param startDate start of the range
+	 * @param endDate end of the range
+	 * @return a list of Release Windows ordered from best to worst
+	 */
 	public List<ReleaseWindow> generateReleaseWindows(Date startDate, Date endDate)
 	{
 		List<ReleaseWindow> windows = new ArrayList<ReleaseWindow>();
@@ -117,6 +153,11 @@ public class DueDateReport {
 		return windows; //just return a list of the release windows now
 	}
 	
+	/**
+	 * Takes in an unordered list of release windows and puts them in order
+	 * @param inList an unordered list of release windows to be ordered
+	 * @return an ordered list of release windows
+	 */
 	private List<ReleaseWindow> orderReleaseWindowsByPriority(List<ReleaseWindow> inList)
 	{
 		List<ReleaseWindow> outList = new ArrayList<ReleaseWindow>();
