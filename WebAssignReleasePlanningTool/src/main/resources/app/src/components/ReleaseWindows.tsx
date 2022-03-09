@@ -1,139 +1,30 @@
 import * as React from "react";
-import { MouseEvent, useRef } from 'react';
-import type { InteractionItem } from 'chart.js';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Legend,
-  PointElement,
-  LineElement,
-  Tooltip,
-  registerables,
-} from 'chart.js';
-import { 
-  Bar,
-  Chart,
-  getDatasetAtEvent,
-  getElementAtEvent,
-  getElementsAtEvent, } from 'react-chartjs-2';
+const vis = require("./../../js/vis-timeline-graph2d.min.js");
 
-  ChartJS.register(
-    ...registerables
-  );
-  
-  ChartJS.register(
-    LinearScale,
-    CategoryScale,
-    BarElement,
-    PointElement,
-    LineElement,
-    Legend,
-    Tooltip,
-  );
 
-export const options = {
-  plugins: {
-    title: {
-      display: false,
-      text: 'Release Windows',
-    },
-  },
-  responsive: true,
-  interaction: {
-    mode: 'index' as const,
-    intersect: false,
-  },
-  scales: {
-    x: {
-      stacked: true,
-    },
-    y: {
-      stacked: true,
-      ticks: {
-        callback: function() {
-            return '';
-        }
-      },
-      beginAtZero: true,
-    },
-  },
-};
+// Create a DataSet (allows two way data-binding)
+var items = new vis.DataSet([
+  { id: 1, style:"background-color: pink;",content: "Exam #1", start: "2014-04-20" },
+  { id: 2, content: "Quiz 2", start: "2014-04-14 8:00 am", end: "2014-04-17 5:00 pm" },
+  { id: 3, content: "Homework 3", start: "2014-04-18" },
+  { id: 4, style:"background-color: pink;",content: "Exam 4", start: "2014-04-16", end: "2014-04-17" },
+  { id: 5, content: "Homework 4", start: "2014-04-15", end: "2014-04-17" },
+  { id: 6, content: "Physics Quiz 1", start: "2014-04-14", end: "2014-04-16" },
+]);
+
+// Configuration for the Timeline
+const options = {};
 
 
 export default function ReleaseWindows(props:{labels: any[], releaseWindows: any[], usage: any[]}) {
-  
-const randData = props.labels.map(() => Math.random());
 
-const data = {
-  labels: props.labels,
-  datasets: [
-    {
-      type: 'line' as const,
-      label: 'Usage',
-      borderColor: 'rgb(255, 99, 132)',
-      borderWidth: 2,
-      fill: false,
-      data: props.labels.map(() => randData),
-    },
-    {
-      type: 'bar' as const,
-      label: 'Priority',
-      backgroundColor: 'rgb(75, 192, 192)',
-      data: props.releaseWindows,
-      borderColor: 'white',
-      borderWidth: 2,
-    },
-  ],
-};
+  React.useEffect(() => {
+    var container: HTMLElement = document.getElementById('timeline');
+    console.log(container);
 
+    var timeline = new vis.Timeline(container,items, options);
+  }, []);
 
-  const printDatasetAtEvent = (dataset: InteractionItem[]) => {
-    if (!dataset.length) return;
-
-    const datasetIndex = dataset[0].datasetIndex;
-
-    console.log(data.datasets[datasetIndex].label);
-  };
-
-  const printElementAtEvent = (element: InteractionItem[]) => {
-    if (!element.length) return;
-
-    const { datasetIndex, index } = element[0];
-
-    console.log(props.labels[index], data.datasets[datasetIndex].data[index]);
-  };
-
-  const printElementsAtEvent = (elements: InteractionItem[]) => {
-    if (!elements.length) return;
-
-    console.log(elements.length);
-  };
-
-  const chartRef = useRef<ChartJS>(null);
-
-  const onClick = (event: MouseEvent<HTMLCanvasElement>) => {
-    const { current: chart } = chartRef;
-
-    if (!chart) {
-      return;
-    }
-
-    printDatasetAtEvent(getDatasetAtEvent(chart, event));
-    printElementAtEvent(getElementAtEvent(chart, event));
-    printElementsAtEvent(getElementsAtEvent(chart, event));
-  };
-
-  return (<>
-      
-    <Chart
-      ref={chartRef}
-      type='bar'
-      onClick={onClick}
-      options={options}
-      data={data}
-    />
+  return (<><div id="timeline"></div>
       </>);
 }
