@@ -24,6 +24,8 @@ public class WebAssignReleasePlanningToolApplication implements CommandLineRunne
     public void run(String... args) throws Exception {
         List<Assignment> assignment = repository.findByName("Weak Bases");
         assignment.forEach(item -> System.out.println(item));
+        List<Assignment> assignment2 = repository.findByDateRange("2022-02-28 21:45:00", "2022-03-01 04:00:00");
+        assignment2.forEach(item -> System.out.println(item));
          
     }
 }

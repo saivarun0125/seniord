@@ -14,9 +14,9 @@ public class AssignmentController  {
     @Autowired
     AssignmentRepository assignmentRespository;
 
-    @GetMapping("/test")
+    @GetMapping("/ReleaseWindows")
     public List<Assignment> getAssignments(){
-        return assignmentRespository.findAll();
+        return assignmentRespository.findByDateRange("2022-02-28 21:45:00", "2022-03-01 04:00:00");
     }
 
     @GetMapping("/assignment/{name}")
