@@ -10,7 +10,9 @@ import {
     FlexBehavior,
     TabsOrientation
 } from 'react-magma-dom';
-import DueDateReport from './components/DueDateReport'
+import DueDateReport from './components/DueDateReport';
+
+import './style.scss';
 
 function HomePage() {
   const [redirect, setRedirect] = useState("Home");
