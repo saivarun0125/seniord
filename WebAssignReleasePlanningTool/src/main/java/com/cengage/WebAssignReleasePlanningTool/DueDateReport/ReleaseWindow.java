@@ -6,6 +6,8 @@ import java.util.List;
 
 public class ReleaseWindow implements Comparable<ReleaseWindow>
 {
+	public static int MILLISECONDS_IN_DAY = 86400000;
+	
 	public static int TEST_WEIGHT = 5;
 	public static int QUIZ_WEIGHT = 3;
 	public static int OTHER_WEIGHT = 1;
@@ -73,12 +75,13 @@ public class ReleaseWindow implements Comparable<ReleaseWindow>
 				thisScore += OTHER_WEIGHT;
 			}
 			
-			if(a.getEndDate().getTime() - a.getStartDate().getTime() <= 3600000) //3600000 milliseconds = 1 hour
+			if(a.getEndDate().getTime() - a.getStartDate().getTime() <= MILLISECONDS_IN_DAY)
 			{
 				hourLess = true;
 				//System.out.println(a.getEndDate().getTime() - a.getStartDate().getTime());
 			}
 		}
+		priorityScore = (double) thisScore;
 		
 		//then check other
 		for(Assignment a : other.assignments)
@@ -96,12 +99,14 @@ public class ReleaseWindow implements Comparable<ReleaseWindow>
 				otherScore += OTHER_WEIGHT;
 			}
 			
-			if(a.getEndDate().getTime() - a.getStartDate().getTime() <= 3600000) //3600000 milliseconds = 1 hour
+			if(a.getEndDate().getTime() - a.getStartDate().getTime() <= MILLISECONDS_IN_DAY) //3600000 milliseconds = 1 hour
 			{
 				hourLessOther = true;
 				//System.out.println("Other " + (a.getEndDate().getTime() - a.getEndDate().getTime()));
 			}
 		}
+		
+		other.priorityScore = (double) otherScore;
 		
 		//if one is less than an hour and not the other, then order accordingly
 		if(hourLess && !hourLessOther)
@@ -109,8 +114,8 @@ public class ReleaseWindow implements Comparable<ReleaseWindow>
 		else if (!hourLess && hourLessOther)
 			return -1;
 		
-		//otherwise, compare by assignment count
-		int comp = new Integer(thisScore).compareTo(otherScore);
+		//otherwise, compare by priority sore
+		int comp = new Double(priorityScore).compareTo(other.priorityScore);
 		if(comp != 0)
 			return comp;
 		

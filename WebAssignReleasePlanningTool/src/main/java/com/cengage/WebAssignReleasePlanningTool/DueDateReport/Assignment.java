@@ -15,6 +15,7 @@ public class Assignment implements Comparable<Assignment> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 	
+	private String name;
 	private String category;
 	private Date startDate;
 	private Date endDate;
@@ -37,6 +38,16 @@ public class Assignment implements Comparable<Assignment> {
 	public Integer getAssignmentId()
 	{
 		return id;
+	}
+	
+	public void setName(String _name)
+	{
+		name = _name;
+	}
+	
+	public String getName()
+	{
+		return name;
 	}
 	
 	public void setCategory(String _category)

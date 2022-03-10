@@ -18,7 +18,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Integer>
     		+ "and d.section=s.id", nativeQuery = true)
 	public List<Assignment> findAll();
 	
-    @Query(value = "select a.id, cat.name as category, d.begins as start_date, d.due as end_date, "
+    @Query(value = "select a.id, a.name as name, cat.name as category, d.begins as start_date, d.due as end_date, "
     			 + "datediff(d.due,d.begins) as days_available, count(r.user) as roster_count "
     			 + "from assignments a, categories cat, deployments d, sections s, roster r "
     			 + "where a.category=cat.id and d.assignment=a.id "
@@ -26,7 +26,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Integer>
     		     + "and a.name = :name", nativeQuery = true)
     public List<Assignment> findByName(@Param("name") String name);
     
-    @Query(value = "SELECT a.id, cat.name as category, d.begins as start_date, d.due as end_date, datediff(d.due, d.begins) as days_available, count(r.user) as roster_count "
+    @Query(value = "SELECT a.id, a.name as name, cat.name as category, d.begins as start_date, d.due as end_date, datediff(d.due, d.begins) as days_available, count(r.user) as roster_count "
     		+ "FROM deployments d, assignments as a, categories as cat, sections as s, roster as r "
     		+ "WHERE ((d.begins >= :start and d.due <= :end) "
     		+ "or (d.begins <= :start and d.due >= :start and d.due <= :end) "
