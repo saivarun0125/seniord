@@ -59,14 +59,6 @@
 		
 	</dependencies>
 	<build>
-        <resources>
-            <resource>
-                <directory>src/main/java</directory>
-                <excludes>
-                    <exclude>**/src/main/resources/app/**</exclude>
-                </excludes>
-            </resource>
-        </resources>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
