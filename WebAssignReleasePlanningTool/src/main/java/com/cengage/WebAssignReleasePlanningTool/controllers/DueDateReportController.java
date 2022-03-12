@@ -168,7 +168,7 @@ public class DueDateReportController {
 		
 		System.out.println(windowEnd.compareTo(end));
 		
-		/*while(windowEnd.compareTo(end) <= 0)
+		while(windowEnd.compareTo(end) <= 0)
 		{
 			ReleaseWindow rw = new ReleaseWindow(windowStart, windowEnd);
 			
@@ -176,9 +176,7 @@ public class DueDateReportController {
 			
 			windowStart = new Date(windowStart.getTime() + 15 * MILLISECONDS_IN_MINUTE);
 			windowEnd = new Date(windowEnd.getTime() + 15 * MILLISECONDS_IN_MINUTE);
-		}*/
-		ReleaseWindow rw = new ReleaseWindow(windowStart, end);
-		windows.add(rw);
+		}
     	
     	return orderReleaseWindowsByPriority(windows, assignments);
     }
