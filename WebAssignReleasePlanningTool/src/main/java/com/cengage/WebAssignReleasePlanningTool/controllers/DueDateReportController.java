@@ -14,6 +14,7 @@ import java.util.Map;
 import org.junit.experimental.theories.internal.Assignments;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,6 +22,7 @@ import com.cengage.WebAssignReleasePlanningTool.DueDateReport.Assignment;
 import com.cengage.WebAssignReleasePlanningTool.DueDateReport.ReleaseWindow;
 import com.cengage.WebAssignReleasePlanningTool.repositories.AssignmentRepository;
 
+@CrossOrigin
 @RestController
 public class DueDateReportController {
 
@@ -71,17 +73,21 @@ public class DueDateReportController {
     	//construct the correct json object for each assignment
     	for(Assignment a : assignments)
     	{
-    		LinkedHashMap<String, Object> currentMap = new LinkedHashMap<String, Object>();
-    		
-    		currentMap.put("id", id++);
-    		currentMap.put("group", 2);
-    		if(a.isTest())
-    			currentMap.put("className", "item-exam");
-    		currentMap.put("content", a.getName());
-    		currentMap.put("start", format.format(a.getStartDate()));
-    		currentMap.put("end", format.format(a.getEndDate()));
-    		
-    		((ArrayList<LinkedHashMap>) map.get("items")).add(currentMap);
+
+			// Don't include assignments where days available > 1
+			if(a.getDaysAvailable() <= 1) {
+	    		LinkedHashMap<String, Object> currentMap = new LinkedHashMap<String, Object>();
+	    		
+	    		currentMap.put("id", id++);
+	    		currentMap.put("group", 2);
+	    		if(a.isTest())
+	    			currentMap.put("className", "item-exam");
+	    		currentMap.put("content", a.getName());
+	    		currentMap.put("start", format.format(a.getStartDate()));
+	    		currentMap.put("end", format.format(a.getEndDate()));
+	    		
+	    		((ArrayList<LinkedHashMap>) map.get("items")).add(currentMap);
+			}
     	}
     	
     	map.put("rawData", new LinkedHashMap<String, Object>());
@@ -162,7 +168,7 @@ public class DueDateReportController {
 		
 		System.out.println(windowEnd.compareTo(end));
 		
-		while(windowEnd.compareTo(end) <= 0)
+		/*while(windowEnd.compareTo(end) <= 0)
 		{
 			ReleaseWindow rw = new ReleaseWindow(windowStart, windowEnd);
 			
@@ -170,7 +176,9 @@ public class DueDateReportController {
 			
 			windowStart = new Date(windowStart.getTime() + 15 * MILLISECONDS_IN_MINUTE);
 			windowEnd = new Date(windowEnd.getTime() + 15 * MILLISECONDS_IN_MINUTE);
-		}
+		}*/
+		ReleaseWindow rw = new ReleaseWindow(windowStart, end);
+		windows.add(rw);
     	
     	return orderReleaseWindowsByPriority(windows, assignments);
     }

@@ -31,6 +31,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Integer>
     		+ "WHERE ((d.begins >= :start and d.due <= :end) "
     		+ "or (d.begins <= :start and d.due >= :start and d.due <= :end) "
     		+ "or (d.begins >= :start and d.begins <= :end and d.due >= :end)) "
+    		+ "and d.begins <= d.due "
     		+ "and a.id=d.assignment "
     		+ "and a.category = cat.id "
     		+ "and d.section = s.id "
