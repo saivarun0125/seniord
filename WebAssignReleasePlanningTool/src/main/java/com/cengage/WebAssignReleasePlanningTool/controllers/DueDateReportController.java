@@ -62,7 +62,7 @@ public class DueDateReportController {
     		currentMap.put("id", id++);
     		currentMap.put("group", 1);
     		currentMap.put("className", "item-release-window");
-    		currentMap.put("content", "Release Window #" + id);
+    		currentMap.put("content", "Window #" + id);
     		currentMap.put("start", format.format(rw.startDate));
     		currentMap.put("end", format.format(rw.endDate));
     		currentMap.put("score", rw.priorityScore);
