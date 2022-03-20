@@ -18,11 +18,11 @@ import {
     Flex, 
     FlexBehavior
 } from 'react-magma-dom';
-import * as moment from 'moment';
+import moment from 'moment';
 
 import RawData from "./RawData";
 import ReleaseWindows from "./ReleaseWindows";
-interface DataSource {
+export interface DataSource {
     items:[],
     rawData: {
         columns: [],
@@ -30,7 +30,7 @@ interface DataSource {
     }
 }
 
-export const dataSourceEmpty: DataSource = {
+const dataSourceEmpty: DataSource = {
     items: [],
     rawData: {
         columns: [],

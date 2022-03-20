@@ -58,12 +58,14 @@ export default function ReleaseWindows(props:{items: any[]}) {
   var items = useRef(new vis.DataSet([]));
 
   React.useEffect(() => {
-    var container: HTMLElement = document.getElementById('timeline');
-    container.innerHTML = '';
-    items.current.clear();
-    items.current.add(props.items);
+    var container: HTMLElement | null = document.getElementById('timeline');
+    if(container != null) {
+      container.innerHTML = '';
+      items.current.clear();
+      items.current.add(props.items);
 
-    setTimeline(new vis.Timeline(container, items.current, groups, options));
+      setTimeline(new vis.Timeline(container, items.current, groups, options));
+    }
   }, [props.items]);
 
   return (<><div id="timeline"></div></>);
