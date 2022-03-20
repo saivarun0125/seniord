@@ -38,7 +38,7 @@ const dataSourceEmpty: DataSource = {
     }
 };
 
-export default function DueDateReportMagma() {
+export default function DueDateReport() {
     const [dataSource, setDataSource] = useState(dataSourceEmpty);
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
