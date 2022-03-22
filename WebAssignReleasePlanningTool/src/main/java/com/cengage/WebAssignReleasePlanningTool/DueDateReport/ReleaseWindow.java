@@ -8,8 +8,9 @@ public class ReleaseWindow implements Comparable<ReleaseWindow>
 {
 	public static int MILLISECONDS_IN_DAY = 86400000;
 	
-	public static int TEST_WEIGHT = 5;
-	public static int QUIZ_WEIGHT = 3;
+	public static int DAY_OR_LESS_MODIFIER = 10;
+	public static int TEST_WEIGHT = 9;
+	public static int QUIZ_WEIGHT = 5;
 	public static int OTHER_WEIGHT = 1;
 
 	public Date startDate;
@@ -62,46 +63,45 @@ public class ReleaseWindow implements Comparable<ReleaseWindow>
 		//first check this
 		for(Assignment a : assignments)
 		{
+			int scoreAdd = OTHER_WEIGHT;
 			if(a.isTest())
 			{
-				thisScore += TEST_WEIGHT;
+				scoreAdd = TEST_WEIGHT;
 			}
 			else if(a.isQuiz())
 			{
-				thisScore += QUIZ_WEIGHT;
-			}
-			else
-			{
-				thisScore += OTHER_WEIGHT;
+				scoreAdd = QUIZ_WEIGHT;
 			}
 			
 			if(a.getEndDate().getTime() - a.getStartDate().getTime() <= MILLISECONDS_IN_DAY)
 			{
 				hourLess = true;
+				scoreAdd *= DAY_OR_LESS_MODIFIER;
 				//System.out.println(a.getEndDate().getTime() - a.getStartDate().getTime());
 			}
+			
+			thisScore += scoreAdd;
 		}
 		priorityScore = (double) thisScore;
 		
 		//then check other
 		for(Assignment a : other.assignments)
 		{
+			int scoreAdd = OTHER_WEIGHT;
 			if(a.isTest())
 			{
-				otherScore += TEST_WEIGHT;
+				scoreAdd += TEST_WEIGHT;
 			}
 			else if(a.isQuiz())
 			{
-				otherScore += QUIZ_WEIGHT;
+				scoreAdd += QUIZ_WEIGHT;
 			}
-			else
-			{
-				otherScore += OTHER_WEIGHT;
-			}
+
 			
 			if(a.getEndDate().getTime() - a.getStartDate().getTime() <= MILLISECONDS_IN_DAY) //3600000 milliseconds = 1 hour
 			{
 				hourLessOther = true;
+				scoreAdd *= DAY_OR_LESS_MODIFIER;
 				//System.out.println("Other " + (a.getEndDate().getTime() - a.getEndDate().getTime()));
 			}
 		}

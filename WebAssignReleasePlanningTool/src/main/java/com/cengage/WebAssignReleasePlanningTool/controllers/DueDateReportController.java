@@ -10,10 +10,10 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.junit.experimental.theories.internal.Assignments;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,6 +32,8 @@ public class DueDateReportController {
     public static int MILLISECONDS_IN_MINUTE = 60000;
     public static String DATE_FORMAT = "yyyy-MM-dd hh:mm:ss";
     public static String DATE_FORMAT_JSON = "yyyy-MM-dd hh:mm a";
+    
+    public static int PERCENT_THRESH = 25;
     
     @GetMapping("/duedatereport")
     public Map getDueDateReport(String startDate, String endDate, int duration)
@@ -75,7 +77,7 @@ public class DueDateReportController {
     	{
 
 			// Don't include assignments where days available > 1
-			if(a.getDaysAvailable() <= 1) {
+			if(a.getDaysAvailable() <= 1  && (a.isTest() || a.isQuiz())) {
 	    		LinkedHashMap<String, Object> currentMap = new LinkedHashMap<String, Object>();
 	    		
 	    		currentMap.put("id", id++);
@@ -161,12 +163,10 @@ public class DueDateReportController {
 		windowStart.setMinutes(windowStart.getMinutes() + windowStart.getMinutes() % 15); //round up start to 15 minute mark
     	Date windowEnd = new Date(windowStart.getTime() + duration * MILLISECONDS_IN_MINUTE);
     	
-		System.out.println(windowStart);
-		System.out.println(windowEnd);
+		//System.out.println(windowStart);
+		//System.out.println(windowEnd);
 		
 		Date end = new SimpleDateFormat(DATE_FORMAT).parse(endDate);
-		
-		System.out.println(windowEnd.compareTo(end));
 		
 		while(windowEnd.compareTo(end) <= 0)
 		{
@@ -178,68 +178,40 @@ public class DueDateReportController {
 			windowEnd = new Date(windowEnd.getTime() + 15 * MILLISECONDS_IN_MINUTE);
 		}
     	
-    	return orderReleaseWindowsByPriority(windows, assignments);
-    }
-    
-    @GetMapping("due-date-test")
-    public List<ReleaseWindow> getDueDateTest(String startDateString, String endDateString) throws ParseException
-    {
-    	Date startDate = null;
-    	Date endDate = null;
+    	windows = orderReleaseWindowsByPriority(windows, assignments);
+    	windows = windows.subList(0, windows.size() / (100 / PERCENT_THRESH));
     	
-        startDate = new SimpleDateFormat("dd-MM-yyy").parse(startDateString);
-        endDate = new SimpleDateFormat("dd-MM-yyyy").parse(endDateString);
-    			
-    	//System.out.println(startDate);
-    	//System.out.println(endDate);
+    	//List<ReleaseWindow> outList = new ArrayList<ReleaseWindow>();
     	
-    	List<Assignment> assignments = new ArrayList<Assignment>();
-    	//generate a set of assignments for testing
-    	assignments.add(new Assignment("homework 1", 
-    			new SimpleDateFormat("dd-MM-yyy-hh-mm").parse("01-03-2022-01-00"),
-    			new SimpleDateFormat("dd-MM-yyy-hh-mm").parse("01-03-2022-04-00"), 1, 25));
-    	assignments.add(new Assignment("test 1",
-    			new SimpleDateFormat("dd-MM-yyy-hh-mm").parse("01-03-2022-04-00"),
-    			new SimpleDateFormat("dd-MM-yyy-hh-mm").parse("01-03-2022-05-00"), 1, 25));
-    	assignments.add(new Assignment("homework 2",
-    			new SimpleDateFormat("dd-MM-yyy-hh-mm").parse("01-03-2022-05-00"),
-    			new SimpleDateFormat("dd-MM-yyy-hh-mm").parse("01-03-2022-06-00"), 1, 25));
-    	assignments.add(new Assignment("homework 3",
-    			new SimpleDateFormat("dd-MM-yyy-hh-mm").parse("02-03-2022-05-00"),
-    			new SimpleDateFormat("dd-MM-yyy-hh-mm").parse("02-03-2022-06-00"), 1, 25));
-    	assignments.add(new Assignment("homework 4",
-    			new SimpleDateFormat("dd-MM-yyy-hh-mm").parse("01-03-2022-05-45"),
-    			new SimpleDateFormat("dd-MM-yyy-hh-mm").parse("01-03-2022-06-00"), 1, 25));
+    	System.out.println("----");
+    	int idx = 0;
+    	for(ReleaseWindow rw : windows)
+    	{
+    		//System.out.println(idx++ + ": " + rw.getStartDate() + " " + rw.getEndDate());
+    	}
+    	System.out.println("----");
     	
-    	System.out.println(assignments.get(0).getStartDate());
     	
-		List<ReleaseWindow> windows = new ArrayList<ReleaseWindow>();
-		
-		//generate all release windows
+    	
+    	
+//       	for(int j = 0; j < windows.size(); j++)
+//       	{
+//       		ReleaseWindow curWin = windows.get(j);
+//       		if(curWin.getEndDate().equals(outList.get(i).getStartDate()))
+//       		{
+//       			outList.get(i).setStartDate(curWin.getStartDate());
+//       			//outList.get(i).assignments = Stream.concat(outList.get(i).assignments.stream(), curWin.assignments.stream()).collect(Collectors.toList());
+//       		}
+//        	else if(curWin.getStartDate().equals(outList.get(i).getEndDate()))
+//        	{
+//        		outList.get(i).setEndDate(curWin.getEndDate());
+//        		//outList.get(i).assignments = Stream.concat(outList.get(i).assignments.stream(), curWin.assignments.stream()).collect(Collectors.toList());;
+//        	}
+//        }
 
-		//for now create a list of 1 hour windows in 15 minute increments and put them in a list
-		Date windowStart = startDate;
-		Date windowEnd = new Date(windowStart.getTime() +  3600000); //3600000 = 1 hour make this a static const later
-		
-		//round up to nearest quarter hour
-		windowStart.setMinutes(windowStart.getMinutes() + windowStart.getMinutes() % 15);
-		windowEnd.setMinutes(windowEnd.getMinutes() + windowEnd.getMinutes() % 15);
-		
-		while(windowEnd.compareTo(endDate) <= 0)
-		{
-			ReleaseWindow rw = new ReleaseWindow(windowStart, windowEnd);
-			
-			windows.add(rw);
-			
-			windowStart = new Date(windowStart.getTime() + 900000); //900000 milliseconds = 15 minutes, make this a static const later
-			windowEnd = new Date(windowEnd.getTime() + 900000);
-			
-			//System.out.println("f" + windowEnd);
-		}
-		
-		windows = orderReleaseWindowsByPriority(windows, assignments);	
-		
-		return windows; //just return a list of the release windows now
+
+    	
+    	return joinReleaseWindows(windows);
     }
     
     /**
@@ -269,27 +241,89 @@ public class DueDateReportController {
 		//sort list
 		Collections.sort(inList);
 		
-		//note: inefficient sort and does not take all factors into account, will need to be changed later
-//		while(outList.size() != inList.size())
-//		{
-//			ReleaseWindow lowest = null;
-//			for(ReleaseWindow rw : inList)
-//			{
-//				if(lowest == null || rw.compareTo(lowest) >= 0)
-//				{
-//					lowest = rw;
-//				}
-//			}
-//			
-//			//System.out.print(lowest.startDate + " " + dict.get(lowest).size() + " ");
-//			for(Assignment a : lowest.assignments)
-//			{
-//				//System.out.print(a.getCategory() + " ");
-//			}
-//			//System.out.println();
-//			outList.add(lowest);
-//		}
-		
 		return inList;
+	}
+	
+	private List<ReleaseWindow> joinReleaseWindows(List<ReleaseWindow> inList)
+	{
+		List<ReleaseWindow> outList = new ArrayList<ReleaseWindow>();
+		
+		while(inList.size() > 0)
+    	{
+    		ReleaseWindow curr = inList.get(0);
+    		boolean joined = false;
+    		//check if we can join to an already existing window
+    		for(ReleaseWindow rw : outList)
+    		{
+    			if(curr.endDate.compareTo(rw.startDate) >= 0 && curr.endDate.compareTo(rw.endDate) <= 0 && curr.startDate.compareTo(rw.startDate) <= 0)
+    			{
+    				rw.setStartDate(curr.startDate);
+    				joined = true;
+    				//System.out.println("join a");
+    				break;
+    			}
+    			else if (curr.startDate.compareTo(rw.startDate) >= 0 && curr.startDate.compareTo(rw.endDate) <= 0 && curr.endDate.compareTo(rw.endDate) >= 0)
+    			{
+    				rw.setEndDate(curr.endDate);
+    				joined = true;
+    				break;
+    			}
+    			else if (curr.startDate.compareTo(rw.startDate) >= 0 && curr.endDate.compareTo(rw.endDate) <= 0)
+    			{
+    				joined = true;
+    				//System.out.println("join c" + curr.startDate + " " + rw.startDate + " " + rw.endDate + " " + curr.endDate);
+    				break;
+    			}
+    		}
+    		
+    		//otherwise make a new one
+    		if(!joined)
+    		{
+    			outList.add(curr);
+    			System.out.println("new: " + curr.startDate + " " + curr.endDate);
+    		}
+    		
+    		inList.remove(0);
+    	}
+		
+		//clean list
+		for(int i = 0; i < outList.size(); i++)
+		{
+			for(int j = 0; j < outList.size(); j++)
+			{
+				if(i == j)
+					continue;
+				
+				//range is a subset of other range
+				if(outList.get(i).getStartDate().compareTo(outList.get(j).getStartDate()) >= 0
+					&& outList.get(i).getEndDate().compareTo(outList.get(j).getEndDate()) <= 0)
+				{
+					outList.remove(i);
+					if(i > 0)
+						i--;
+					if(j > 0)
+						j--;
+				}
+				
+				else if(outList.get(i).getStartDate().compareTo(outList.get(j).getStartDate()) >= 0
+						&& outList.get(i).getStartDate().compareTo(outList.get(j).getEndDate()) <= 0)
+				{
+					System.out.println("deleted: " + outList.get(i).getStartDate() + " " + outList.get(i).getEndDate());
+					System.out.println("from: " + outList.get(j).getStartDate() + " " + outList.get(j).getEndDate());
+					if(outList.get(i).getEndDate().compareTo(outList.get(j).getEndDate()) >= 0)
+					{
+						outList.get(j).setEndDate(outList.get(i).getEndDate());
+					}
+					
+					outList.remove(i);
+					if(i > 0)
+						i--;
+					if(j > 0)
+						j--;
+				}
+			}
+		}
+		
+		return outList;
 	}
 }
