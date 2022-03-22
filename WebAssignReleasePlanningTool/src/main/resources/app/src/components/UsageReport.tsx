@@ -135,27 +135,26 @@ export default function UsageReport() {
     const [endDate, setEndDate] = useState("");
     const [role, setRole] = useState("");
     const [activity, setActivity] = useState("");
-    const ref = useRef(null);
 
     const roles = [
         {
           label: "Faculty",
-          value: "faculty"
+          value: "FACULTY"
         },
         {
           label: "Student",
-          value: "student"
+          value: "STUDENT"
         }
       ];
 
       const activities = [
           {
             label: "Create a Class",
-            value: "create_a_class"
+            value: "CREATE_CLASS"
           },
           {
             label: "Schedule an Assignment",
-            value: "schedule_an_assignment"
+            value: "SCHEDULE_ASSIGNMENT"
           }
         ];
   
