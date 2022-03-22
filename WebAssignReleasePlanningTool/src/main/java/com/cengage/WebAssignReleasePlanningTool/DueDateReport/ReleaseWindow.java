@@ -57,10 +57,65 @@ public class ReleaseWindow implements Comparable<ReleaseWindow>
 		boolean hourLessOther = false;
 		
 		//get the score for each window as well
-		int thisScore = 0;
-		int otherScore = 0;
+		double thisScore = 0;
+		double otherScore = 0;
 		
 		//first check this
+
+//		priorityScore = (double) thisScore;
+//		
+//		//then check other
+//		for(Assignment a : other.assignments)
+//		{
+//			int scoreAdd = OTHER_WEIGHT;
+//			if(a.isTest())
+//			{
+//				scoreAdd += TEST_WEIGHT;
+//			}
+//			else if(a.isQuiz())
+//			{
+//				scoreAdd += QUIZ_WEIGHT;
+//			}
+//
+//			
+//			if(a.getEndDate().getTime() - a.getStartDate().getTime() <= MILLISECONDS_IN_DAY)
+//			{
+//				hourLessOther = true;
+//				scoreAdd *= DAY_OR_LESS_MODIFIER;
+//				//System.out.println("Other " + (a.getEndDate().getTime() - a.getEndDate().getTime()));
+//			}
+//			
+//			otherScore += scoreAdd;
+//		}
+//		
+		if(priorityScore == 0)
+			calculateScore();
+		if(other.priorityScore == 0)
+			other.calculateScore();
+		
+		thisScore = priorityScore;
+		otherScore = other.priorityScore;
+		
+//		other.priorityScore = (double) otherScore;
+		
+		//if one is less than an hour and not the other, then order accordingly
+//		if(hourLess && !hourLessOther)
+//			return 1;
+//		else if (!hourLess && hourLessOther)
+//			return -1;
+		
+		//otherwise, compare by priority sore
+		if(thisScore > otherScore)
+			return 1;
+		else if (otherScore > thisScore)
+			return -1;
+		
+		return 0;
+	}
+	
+	public void calculateScore()
+	{
+		priorityScore = 0;
 		for(Assignment a : assignments)
 		{
 			int scoreAdd = OTHER_WEIGHT;
@@ -75,50 +130,10 @@ public class ReleaseWindow implements Comparable<ReleaseWindow>
 			
 			if(a.getEndDate().getTime() - a.getStartDate().getTime() <= MILLISECONDS_IN_DAY)
 			{
-				hourLess = true;
 				scoreAdd *= DAY_OR_LESS_MODIFIER;
-				//System.out.println(a.getEndDate().getTime() - a.getStartDate().getTime());
 			}
 			
-			thisScore += scoreAdd;
+			priorityScore += scoreAdd;
 		}
-		priorityScore = (double) thisScore;
-		
-		//then check other
-		for(Assignment a : other.assignments)
-		{
-			int scoreAdd = OTHER_WEIGHT;
-			if(a.isTest())
-			{
-				scoreAdd += TEST_WEIGHT;
-			}
-			else if(a.isQuiz())
-			{
-				scoreAdd += QUIZ_WEIGHT;
-			}
-
-			
-			if(a.getEndDate().getTime() - a.getStartDate().getTime() <= MILLISECONDS_IN_DAY) //3600000 milliseconds = 1 hour
-			{
-				hourLessOther = true;
-				scoreAdd *= DAY_OR_LESS_MODIFIER;
-				//System.out.println("Other " + (a.getEndDate().getTime() - a.getEndDate().getTime()));
-			}
-		}
-		
-		other.priorityScore = (double) otherScore;
-		
-		//if one is less than an hour and not the other, then order accordingly
-		if(hourLess && !hourLessOther)
-			return 1;
-		else if (!hourLess && hourLessOther)
-			return -1;
-		
-		//otherwise, compare by priority sore
-		int comp = new Double(priorityScore).compareTo(other.priorityScore);
-		if(comp != 0)
-			return comp;
-		
-		return 0;
 	}
 }

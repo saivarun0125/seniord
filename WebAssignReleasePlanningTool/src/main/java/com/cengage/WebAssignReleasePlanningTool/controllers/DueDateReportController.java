@@ -179,17 +179,25 @@ public class DueDateReportController {
 		}
     	
     	windows = orderReleaseWindowsByPriority(windows, assignments);
-    	windows = windows.subList(0, windows.size() / (100 / PERCENT_THRESH));
-    	
-    	//List<ReleaseWindow> outList = new ArrayList<ReleaseWindow>();
     	
     	System.out.println("----");
     	int idx = 0;
     	for(ReleaseWindow rw : windows)
     	{
-    		//System.out.println(idx++ + ": " + rw.getStartDate() + " " + rw.getEndDate());
+    		System.out.println(idx++ + ": " + rw.getStartDate() + " " + rw.getEndDate() + " " + rw.priorityScore);
     	}
     	System.out.println("----");
+    	
+    	windows = windows.subList(0, windows.size() / (100 / PERCENT_THRESH));
+    	
+    	//List<ReleaseWindow> outList = new ArrayList<ReleaseWindow>();
+
+//    	int idx = 0;
+//    	for(ReleaseWindow rw : windows)
+//    	{
+//    		System.out.println(idx++ + ": " + rw.getStartDate() + " " + rw.getEndDate());
+//    	}
+//    	System.out.println("----");
     	
     	
     	
