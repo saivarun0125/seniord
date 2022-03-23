@@ -30,7 +30,7 @@ public class DueDateReportController {
     AssignmentRepository assignmentRespository;
 
     public static int MILLISECONDS_IN_MINUTE = 60000;
-    public static String DATE_FORMAT = "yyyy-MM-dd hh:mm:ss";
+    public static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     public static String DATE_FORMAT_JSON = "yyyy-MM-dd hh:mm a";
     
     public static int PERCENT_THRESH = 25;
