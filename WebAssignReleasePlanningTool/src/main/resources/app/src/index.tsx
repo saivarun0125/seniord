@@ -12,7 +12,7 @@ import {
 } from 'react-magma-dom';
 import DueDateReport from './components/DueDateReport';
 import UsageReport from "./components/UsageReport";
-
+import OrderOfOperationsTool from "./components/OrderOfOperationsTool";
 import './style.scss';
 
 function HomePage() {
@@ -37,7 +37,7 @@ function HomePage() {
         </Flex>
         <Flex behavior={FlexBehavior.item} xs={12}>
           <Button onClick={() => {setRedirect("OrderOfOperations")}} variant={ButtonVariant.outline}>
-          Order of operations tool
+          Order of Operations Tool
           </Button>
         </Flex>
       </Flex>
@@ -50,7 +50,7 @@ function HomePage() {
     output = <UsageReport />;
   }
   else {
-    output = <div>OrderOfOperations</div>;
+    output = <OrderOfOperationsTool />;
   }
 
   return (output);
