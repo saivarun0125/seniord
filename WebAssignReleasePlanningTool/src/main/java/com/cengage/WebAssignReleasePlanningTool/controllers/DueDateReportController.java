@@ -33,7 +33,9 @@ public class DueDateReportController {
     public static String DATE_FORMAT = "yyyy-MM-dd hh:mm:ss";
     public static String DATE_FORMAT_JSON = "yyyy-MM-dd hh:mm a";
     
-    public static int PERCENT_THRESH = 25;
+    public static int PERCENT_THRESH = 10;
+    
+	public static int JOIN_SCORE_PERCENT_RANGE = 5;
     
     @GetMapping("/duedatereport")
     public Map getDueDateReport(String startDate, String endDate, int duration)
@@ -148,9 +150,6 @@ public class DueDateReportController {
     
     private List<ReleaseWindow> generateReleaseWindows(String startDate, String endDate, int duration) throws ParseException
     {
-    	//Date startDate = new SimpleDateFormat("dd-MM-yyy-hh-mm").parse("02-03-2022-00-00");
-    	//Date endDate = new SimpleDateFormat("dd-MM-yyy-hh-mm").parse("04-03-2022-00-00");
-        //return assignmentRespository.findByDateRange(startDate, endDate);
     	System.out.println(startDate);
     	System.out.println(endDate);
     	
@@ -162,9 +161,6 @@ public class DueDateReportController {
     	Date windowStart = new SimpleDateFormat(DATE_FORMAT).parse(startDate);
 		windowStart.setMinutes(windowStart.getMinutes() + windowStart.getMinutes() % 15); //round up start to 15 minute mark
     	Date windowEnd = new Date(windowStart.getTime() + duration * MILLISECONDS_IN_MINUTE);
-    	
-		//System.out.println(windowStart);
-		//System.out.println(windowEnd);
 		
 		Date end = new SimpleDateFormat(DATE_FORMAT).parse(endDate);
 		
@@ -180,44 +176,7 @@ public class DueDateReportController {
     	
     	windows = orderReleaseWindowsByPriority(windows, assignments);
     	
-    	System.out.println("----");
-    	int idx = 0;
-    	for(ReleaseWindow rw : windows)
-    	{
-    		System.out.println(idx++ + ": " + rw.getStartDate() + " " + rw.getEndDate() + " " + rw.priorityScore);
-    	}
-    	System.out.println("----");
-    	
     	windows = windows.subList(0, windows.size() / (100 / PERCENT_THRESH));
-    	
-    	//List<ReleaseWindow> outList = new ArrayList<ReleaseWindow>();
-
-//    	int idx = 0;
-//    	for(ReleaseWindow rw : windows)
-//    	{
-//    		System.out.println(idx++ + ": " + rw.getStartDate() + " " + rw.getEndDate());
-//    	}
-//    	System.out.println("----");
-    	
-    	
-    	
-    	
-//       	for(int j = 0; j < windows.size(); j++)
-//       	{
-//       		ReleaseWindow curWin = windows.get(j);
-//       		if(curWin.getEndDate().equals(outList.get(i).getStartDate()))
-//       		{
-//       			outList.get(i).setStartDate(curWin.getStartDate());
-//       			//outList.get(i).assignments = Stream.concat(outList.get(i).assignments.stream(), curWin.assignments.stream()).collect(Collectors.toList());
-//       		}
-//        	else if(curWin.getStartDate().equals(outList.get(i).getEndDate()))
-//        	{
-//        		outList.get(i).setEndDate(curWin.getEndDate());
-//        		//outList.get(i).assignments = Stream.concat(outList.get(i).assignments.stream(), curWin.assignments.stream()).collect(Collectors.toList());;
-//        	}
-//        }
-
-
     	
     	return joinReleaseWindows(windows);
     }
@@ -240,7 +199,6 @@ public class DueDateReportController {
 				if((a.getStartDate().compareTo(rw.startDate) <= 0 && a.getEndDate().compareTo(rw.startDate) >= 0)
 					|| (a.getStartDate().compareTo(rw.endDate) <= 0 && a.getEndDate().compareTo(rw.endDate) >= 0))
 				{
-					//System.out.println(rw + " " + a);
 					rw.assignments.add(a);
 				}
 			}
@@ -260,26 +218,35 @@ public class DueDateReportController {
     	{
     		ReleaseWindow curr = inList.get(0);
     		boolean joined = false;
+    		
+    		double joinUpperBound = curr.priorityScore + curr.priorityScore * JOIN_SCORE_PERCENT_RANGE;
+    		double joinLowerBound = curr.priorityScore - curr.priorityScore * JOIN_SCORE_PERCENT_RANGE;
+
     		//check if we can join to an already existing window
     		for(ReleaseWindow rw : outList)
     		{
+    			if(rw.priorityScore > joinUpperBound || rw.priorityScore < joinLowerBound)
+    			{
+    				continue;
+    			}
     			if(curr.endDate.compareTo(rw.startDate) >= 0 && curr.endDate.compareTo(rw.endDate) <= 0 && curr.startDate.compareTo(rw.startDate) <= 0)
     			{
     				rw.setStartDate(curr.startDate);
+    				rw.assignments = Stream.concat(curr.assignments.stream(), rw.assignments.stream()).collect(Collectors.toList());;
     				joined = true;
-    				//System.out.println("join a");
     				break;
     			}
     			else if (curr.startDate.compareTo(rw.startDate) >= 0 && curr.startDate.compareTo(rw.endDate) <= 0 && curr.endDate.compareTo(rw.endDate) >= 0)
     			{
     				rw.setEndDate(curr.endDate);
+    				rw.assignments = Stream.concat(curr.assignments.stream(), rw.assignments.stream()).collect(Collectors.toList());
     				joined = true;
     				break;
     			}
     			else if (curr.startDate.compareTo(rw.startDate) >= 0 && curr.endDate.compareTo(rw.endDate) <= 0)
     			{
+    				rw.assignments = Stream.concat(curr.assignments.stream(), rw.assignments.stream()).collect(Collectors.toList());
     				joined = true;
-    				//System.out.println("join c" + curr.startDate + " " + rw.startDate + " " + rw.endDate + " " + curr.endDate);
     				break;
     			}
     		}
@@ -288,7 +255,6 @@ public class DueDateReportController {
     		if(!joined)
     		{
     			outList.add(curr);
-    			System.out.println("new: " + curr.startDate + " " + curr.endDate);
     		}
     		
     		inList.remove(0);
@@ -297,10 +263,15 @@ public class DueDateReportController {
 		//clean list
 		for(int i = 0; i < outList.size(); i++)
 		{
+    		double joinUpperBound = outList.get(i).priorityScore + outList.get(i).priorityScore * JOIN_SCORE_PERCENT_RANGE;
+    		double joinLowerBound = outList.get(i).priorityScore - outList.get(i).priorityScore * JOIN_SCORE_PERCENT_RANGE;
+    		
 			for(int j = 0; j < outList.size(); j++)
 			{
-				if(i == j)
+				if(i == j || outList.get(j).priorityScore > joinUpperBound ||outList.get(j).priorityScore < joinLowerBound)
+				{
 					continue;
+				}
 				
 				//range is a subset of other range
 				if(outList.get(i).getStartDate().compareTo(outList.get(j).getStartDate()) >= 0
@@ -316,11 +287,10 @@ public class DueDateReportController {
 				else if(outList.get(i).getStartDate().compareTo(outList.get(j).getStartDate()) >= 0
 						&& outList.get(i).getStartDate().compareTo(outList.get(j).getEndDate()) <= 0)
 				{
-					System.out.println("deleted: " + outList.get(i).getStartDate() + " " + outList.get(i).getEndDate());
-					System.out.println("from: " + outList.get(j).getStartDate() + " " + outList.get(j).getEndDate());
 					if(outList.get(i).getEndDate().compareTo(outList.get(j).getEndDate()) >= 0)
 					{
 						outList.get(j).setEndDate(outList.get(i).getEndDate());
+						outList.get(j).assignments = Stream.concat(outList.get(j).assignments.stream(), outList.get(i).assignments.stream()).collect(Collectors.toList());
 					}
 					
 					outList.remove(i);
@@ -332,6 +302,7 @@ public class DueDateReportController {
 			}
 		}
 		
+		Collections.sort(outList);
 		return outList;
 	}
 }
