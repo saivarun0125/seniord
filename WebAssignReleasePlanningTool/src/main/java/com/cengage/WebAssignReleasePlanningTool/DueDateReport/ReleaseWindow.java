@@ -8,16 +8,16 @@ public class ReleaseWindow implements Comparable<ReleaseWindow>
 {
 	public static int MILLISECONDS_IN_DAY = 86400000;
 	
-	public static int DAY_OR_LESS_MODIFIER = 10;
-	public static int TEST_WEIGHT = 9;
-	public static int QUIZ_WEIGHT = 5;
+	public static int DAY_OR_LESS_MODIFIER = 5;
+	public static int TEST_WEIGHT = 25;
+	public static int QUIZ_WEIGHT = 10;
 	public static int OTHER_WEIGHT = 1;
-
+	
 	public Date startDate;
 	public Date endDate;
 	public double priorityScore;
 	
-	public List<Assignment> assignments; //list of assignments at this time, not in UML so discuss with team
+	public List<Assignment> assignments; //list of assignments at this time
 	
 	public ReleaseWindow(Date _startDate, Date _endDate)
 	{
@@ -59,34 +59,6 @@ public class ReleaseWindow implements Comparable<ReleaseWindow>
 		//get the score for each window as well
 		double thisScore = 0;
 		double otherScore = 0;
-		
-		//first check this
-
-//		priorityScore = (double) thisScore;
-//		
-//		//then check other
-//		for(Assignment a : other.assignments)
-//		{
-//			int scoreAdd = OTHER_WEIGHT;
-//			if(a.isTest())
-//			{
-//				scoreAdd += TEST_WEIGHT;
-//			}
-//			else if(a.isQuiz())
-//			{
-//				scoreAdd += QUIZ_WEIGHT;
-//			}
-//
-//			
-//			if(a.getEndDate().getTime() - a.getStartDate().getTime() <= MILLISECONDS_IN_DAY)
-//			{
-//				hourLessOther = true;
-//				scoreAdd *= DAY_OR_LESS_MODIFIER;
-//				//System.out.println("Other " + (a.getEndDate().getTime() - a.getEndDate().getTime()));
-//			}
-//			
-//			otherScore += scoreAdd;
-//		}
 //		
 		if(priorityScore == 0)
 			calculateScore();
@@ -95,14 +67,6 @@ public class ReleaseWindow implements Comparable<ReleaseWindow>
 		
 		thisScore = priorityScore;
 		otherScore = other.priorityScore;
-		
-//		other.priorityScore = (double) otherScore;
-		
-		//if one is less than an hour and not the other, then order accordingly
-//		if(hourLess && !hourLessOther)
-//			return 1;
-//		else if (!hourLess && hourLessOther)
-//			return -1;
 		
 		//otherwise, compare by priority sore
 		if(thisScore > otherScore)
@@ -132,6 +96,28 @@ public class ReleaseWindow implements Comparable<ReleaseWindow>
 			{
 				scoreAdd *= DAY_OR_LESS_MODIFIER;
 			}
+			
+			// calculate proportion of the assignment window within the release window
+			// does not apply to assignments shorter than the release window
+			
+			if(endDate.getTime() - endDate.getTime() < a.getEndDate().getTime() - a.getStartDate().getTime())
+			{
+				double intersect = a.getEndDate().getTime() - a.getStartDate().getTime();
+				if(a.getStartDate().compareTo(startDate) > 0)
+				{
+					intersect -= a.getStartDate().getTime() - startDate.getTime();
+				}
+				if(a.getEndDate().compareTo(endDate) < 0)
+				{
+					intersect -= endDate.getTime() - a.getEndDate().getTime();
+				}
+				
+				double ratio = 1 - intersect / (a.getEndDate().getTime() - a.getStartDate().getTime());
+				scoreAdd *= ratio;
+			}
+			
+			//System.out.println(a.getRosterCount());
+			scoreAdd *= a.getRosterCount();
 			
 			priorityScore += scoreAdd;
 		}
