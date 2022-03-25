@@ -30,7 +30,7 @@ public class DueDateReportController {
     AssignmentRepository assignmentRespository;
 
     public static int MILLISECONDS_IN_MINUTE = 60000;
-    public static String DATE_FORMAT = "yyyy-MM-dd hh:mm:ss";
+    public static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     public static String DATE_FORMAT_JSON = "yyyy-MM-dd hh:mm a";
     
     public static int PERCENT_THRESH = 10;
@@ -86,7 +86,12 @@ public class DueDateReportController {
 	    		currentMap.put("group", 2);
 	    		if(a.isTest())
 	    			currentMap.put("className", "item-exam");
+	    		else
+	    			currentMap.put("className", "item-assignment");
 	    		currentMap.put("content", a.getName());
+	    		currentMap.put("category", a.getCategory());
+	    		currentMap.put("daysAvailable", a.getDaysAvailable());
+	    		currentMap.put("rosterCount", a.getRosterCount());
 	    		currentMap.put("start", format.format(a.getStartDate()));
 	    		currentMap.put("end", format.format(a.getEndDate()));
 	    		
