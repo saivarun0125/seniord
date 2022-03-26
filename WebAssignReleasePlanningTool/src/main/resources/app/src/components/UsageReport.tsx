@@ -28,7 +28,6 @@ import {
   getDatasetAtEvent,
   getElementAtEvent,
   getElementsAtEvent, } from 'react-chartjs-2';
-import moment from 'moment';
 
 ChartJS.register(
     ...registerables
@@ -160,12 +159,12 @@ export default function UsageReport() {
   
   
     const handleSubmit = async () => {
-        let formattedStartDate = (moment(startDate)).format('YYYY-MM-DD 00:00:00');
-        let formattedEndDate = (moment(endDate)).format('YYYY-MM-DD 23:59:59');
+        //let formattedStartDate = (moment(startDate)).format('YYYY-MM-DD 00:00:00');
+        //let formattedEndDate = (moment(endDate)).format('YYYY-MM-DD 23:59:59');
 
         var url = "http://localhost:8080/duedatereport?";
-        url += "startDate=" + formattedStartDate;
-        url += "&endDate=" + formattedEndDate;
+        url += "startDate=" + startDate;
+        url += "&endDate=" + endDate;
         console.log(url);
 
         axios.get(url)

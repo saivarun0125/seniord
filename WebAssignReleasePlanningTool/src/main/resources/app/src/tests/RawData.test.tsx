@@ -3,7 +3,7 @@ import { render } from "@testing-library/react";
 import RawData from "../components/RawData";
 
 test("<RawData", () => {
-  const { getByTitle, getByText } = render(<RawData columns={[{ "field": "category", "header": "Category" }]} rows={[{"id": 0, "category": "Exam"}]} />);
+  const { getByTitle, getByText } = render(<RawData columns={[{ "field": "category", "header": "Category" }]} rows={[{"id": 0, "category": "Exam"}]} export={true}/>);
   var element = getByText(/Category/i);
   expect(element).toBeInTheDocument();
   element = getByText(/Exam/i);
