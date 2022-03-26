@@ -18,7 +18,6 @@ import {
     Flex, 
     FlexBehavior
 } from 'react-magma-dom';
-import moment from 'moment';
 
 import RawData from "./RawData";
 import ReleaseWindows from "./ReleaseWindows";
@@ -39,9 +38,12 @@ const dataSourceEmpty: DataSource = {
 };
 
 export default function DueDateReport() {
+    var initEndDate = new Date();
+    initEndDate.setUTCHours(23,59,59,0);
+
     const [dataSource, setDataSource] = useState(dataSourceEmpty);
-    const [startDate, setStartDate] = useState("");
-    const [endDate, setEndDate] = useState("");
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(initEndDate);
     const [duration, setDuration] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
 
@@ -62,12 +64,14 @@ export default function DueDateReport() {
   
   
     const handleSubmit = async () => {
-        let formattedStartDate = (moment(startDate)).format('YYYY-MM-DD 00:00:00');
-        let formattedEndDate = (moment(endDate)).format('YYYY-MM-DD 23:59:59');
+        if(!duration) {
+            setErrorMessage("'duration' can't be blank.");
+            return;
+        }
 
         var url = "http://localhost:8080/duedatereport?";
-        url += "startDate=" + formattedStartDate;
-        url += "&endDate=" + formattedEndDate;
+        url += "startDate=" + startDate.toISOString();
+        url += "&endDate=" + endDate.toISOString();
         url += "&duration=" + duration;
         console.log(url);
 
@@ -91,14 +95,18 @@ export default function DueDateReport() {
         <Flex behavior={FlexBehavior.container} spacing={3} style={{padding:"40px"}}>
             <Flex behavior={FlexBehavior.item} xs={2}>
                 <DatePicker labelText="Start" onChange={(date)=>{
-                        setStartDate(date);
+                        var startDate = new Date(date);
+                        startDate.setUTCHours(0,0,0,0);
+                        setStartDate(startDate);
                     }}/>
             </Flex>
             <Flex behavior={FlexBehavior.item} xs={10}>
             </Flex>
             <Flex behavior={FlexBehavior.item} xs={2}>
                     <DatePicker labelText="End" onChange={(date)=>{
-                        setEndDate(date);
+                        var endDate = new Date(date);
+                        endDate.setUTCHours(23,59,59,0);
+                        setEndDate(endDate);
                     }}/>
             </Flex>
             <Flex behavior={FlexBehavior.item} xs={10}>
@@ -126,10 +134,10 @@ export default function DueDateReport() {
                 </Tabs>
                 <TabPanelsContainer>
                     <TabPanel>
-                    <ReleaseWindows items={dataSource.items}/>
+                    <ReleaseWindows items={dataSource.items} startDate={startDate} endDate={endDate}/>
                     </TabPanel>
                     <TabPanel>
-                    <RawData columns={dataSource.rawData.columns} rows={dataSource.rawData.rows}/>
+                    <RawData columns={dataSource.rawData.columns} rows={dataSource.rawData.rows} export={true}/>
                     </TabPanel>
                 </TabPanelsContainer>
             </TabsContainer>

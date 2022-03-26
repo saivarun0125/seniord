@@ -2,7 +2,7 @@ import * as React from "react";
 import {  Button, ButtonVariant, Datagrid, DropdownDropDirection } from 'react-magma-dom';
 import { ExportToCsv } from 'export-to-csv';
 
-export default function RawData(props:{columns: any[], rows: any[]}) {
+export default function RawData(props:{columns: any[], rows: any[], export: boolean}) {
 
     const options = { 
         fieldSeparator: ',',
@@ -28,7 +28,7 @@ export default function RawData(props:{columns: any[], rows: any[]}) {
                     pagination: { dropdownDropDirection: DropdownDropDirection.down },
                 }}
             />
-            <Button onClick={export_data} variant={ButtonVariant.outline}> Export </Button>
+            {props.export && (<Button onClick={export_data} variant={ButtonVariant.outline}> Export </Button>)}
             </>
     );
 }
