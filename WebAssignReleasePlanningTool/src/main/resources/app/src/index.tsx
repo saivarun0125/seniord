@@ -11,6 +11,7 @@ import {
     TabsOrientation
 } from 'react-magma-dom';
 import DueDateReport from './components/DueDateReport';
+import UsageReport from "./components/UsageReport";
 
 import './style.scss';
 
@@ -46,7 +47,7 @@ function HomePage() {
     output = <DueDateReport />;
   }
   else if(redirect === "UsageReport") {
-    output = <div>UsageReport</div>;
+    output = <UsageReport />;
   }
   else {
     output = <div>OrderOfOperations</div>;
