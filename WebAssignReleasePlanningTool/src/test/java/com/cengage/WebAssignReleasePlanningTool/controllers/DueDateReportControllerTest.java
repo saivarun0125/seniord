@@ -40,10 +40,12 @@ class DueDateReportControllerTest {
 	void test() {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 		ResultActions ra = null;
+		
+		//first test day with no assignments
 		try {
 			ra = mockMvc.perform(MockMvcRequestBuilders.get("/duedatereport")
-									.param("startDate", "2022-03-12T00:00:00.000Z")
-									.param("endDate", "2022-03-13T23:59:59.000Z")
+									.param("startDate", "1990-02-25T00:00:00.000Z")
+									.param("endDate", "1990-02-26T23:59:59.000Z")
 									.param("duration", "90"));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -73,6 +75,12 @@ class DueDateReportControllerTest {
 					}
 				}
 			}
+			
+			System.out.println(ra.andReturn().getResponse().getContentAsString());
+			
+			ra.andExpect(jsonPath("rawData.rows").isArray()).andExpect(jsonPath("rawData.rows[0]").doesNotExist());  //no assignments = no rows
+			
+			assertEquals(2, idx);
 			
 			
 		} catch (Exception e) {

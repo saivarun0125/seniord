@@ -52,14 +52,10 @@ public class ReleaseWindow implements Comparable<ReleaseWindow>
 	@Override
 	public int compareTo(ReleaseWindow other)
 	{
-		//first, check if either window contains a  > 1 hour assingment
-		boolean hourLess = false;
-		boolean hourLessOther = false;
-		
 		//get the score for each window as well
 		double thisScore = 0;
 		double otherScore = 0;
-//		
+		
 		if(priorityScore == 0)
 			calculateScore();
 		if(other.priorityScore == 0)
@@ -116,7 +112,6 @@ public class ReleaseWindow implements Comparable<ReleaseWindow>
 				scoreAdd *= ratio;
 			}
 			
-			//System.out.println(a.getRosterCount());
 			scoreAdd *= a.getRosterCount();
 			
 			priorityScore += scoreAdd;
