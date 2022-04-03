@@ -8,13 +8,18 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.cengage.WebAssignReleasePlanningTool.DueDateReport.Assignment;
+import com.cengage.WebAssignReleasePlanningTool.OrderOfOperations.Repository;
 import com.cengage.WebAssignReleasePlanningTool.repositories.AssignmentRepository;
+import com.cengage.WebAssignReleasePlanningTool.repositories.RepositoryRepository;
 
 @SpringBootApplication
 public class WebAssignReleasePlanningToolApplication implements CommandLineRunner {
  
     @Autowired
     AssignmentRepository repository;
+    
+    @Autowired
+    RepositoryRepository reprep;
      
     public static void main(String[] args) {
         SpringApplication.run(WebAssignReleasePlanningToolApplication.class, args);
@@ -22,8 +27,11 @@ public class WebAssignReleasePlanningToolApplication implements CommandLineRunne
  
     @Override
     public void run(String... args) throws Exception {
-        List<Assignment> assignment = repository.findByName("Acid Basics");
-        assignment.forEach(item -> System.out.println(item));
-         
+        List<Repository> test = reprep.findAll();
+        for(Repository r : test)
+        {
+        	System.out.println(r);
+        }
+        
     }
 }

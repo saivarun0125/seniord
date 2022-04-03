@@ -7,19 +7,22 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cengage.WebAssignReleasePlanningTool.OrderOfOperations.Release;
+import com.cengage.WebAssignReleasePlanningTool.OrderOfOperations.Repository;
 import com.cengage.WebAssignReleasePlanningTool.repositories.AssignmentRepository;
+import com.cengage.WebAssignReleasePlanningTool.repositories.RepositoryRepository;
 
 @CrossOrigin
 @RestController
-public class ReleasesController {
+public class RepositoryController {
 
     @Autowired
-    AssignmentRepository assignmentRespository;
+    RepositoryRepository repositoryRepository;
 
-    @GetMapping ( "/releases" )
-    public List<Releases> getReleases () {
+    @GetMapping ( "/repositories" )
+    public List<Repository> getRepositories () {
 
-        return null;
+        return repositoryRepository.findAll();
     }
 
 }
