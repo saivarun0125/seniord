@@ -9,7 +9,8 @@ import {
     Input, 
     InputType,
     Select, 
-    TabsAlignment,
+    Banner, 
+    AlertVariant,
     TabsContainer,
     Tabs,
     Tab,
@@ -42,6 +43,7 @@ export default function DueDateReport() {
     initEndDate.setUTCHours(23,59,59,0);
 
     const [dataSource, setDataSource] = useState(dataSourceEmpty);
+    const [isLoading, setIsLoading] = useState(false);
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(initEndDate);
     const [duration, setDuration] = useState("");
@@ -64,8 +66,17 @@ export default function DueDateReport() {
   
   
     const handleSubmit = async () => {
+        setIsLoading(true);
+        setErrorMessage("");
         if(!duration) {
-            setErrorMessage("'duration' can't be blank.");
+            setErrorMessage("'Duration' can't be blank.");
+            setIsLoading(false);
+            return;
+        }
+
+        if(endDate < startDate) {
+            setErrorMessage("'End' can't be less than 'Start'.");
+            setIsLoading(false);
             return;
         }
 
@@ -80,6 +91,12 @@ export default function DueDateReport() {
             .then((data) => {
                 console.log(data);
                 setDataSource(data);
+                setIsLoading(false);
+            })
+            .catch((error: AxiosError) => {
+                console.log(error.message);
+                setIsLoading(false);
+                setErrorMessage("Fetching data failed!");
             });
     };
 
@@ -122,9 +139,12 @@ export default function DueDateReport() {
             <Flex behavior={FlexBehavior.item} xs={8}>
             </Flex>
             <Flex behavior={FlexBehavior.item} xs={2}>
-                    <Button onClick={handleSubmit}>Generate</Button>
+                    <Button onClick={handleSubmit} isLoading={isLoading}>Generate</Button>
             </Flex>
             <Flex behavior={FlexBehavior.item} xs={10}>
+            </Flex>
+            <Flex behavior={FlexBehavior.item} xs={12}>
+                {errorMessage && (<Banner variant={AlertVariant.danger}>{errorMessage}</Banner>)}
             </Flex>
             <Flex behavior={FlexBehavior.item} xs={12}>
             <TabsContainer activeIndex={0}>
