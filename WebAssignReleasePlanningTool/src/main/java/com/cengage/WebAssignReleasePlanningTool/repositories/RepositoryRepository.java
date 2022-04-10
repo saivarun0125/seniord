@@ -9,7 +9,4 @@ import com.cengage.WebAssignReleasePlanningTool.DueDateReport.Assignment;
 import com.cengage.WebAssignReleasePlanningTool.OrderOfOperations.Repository;
 
 public interface RepositoryRepository extends JpaRepository<Repository, Integer>, RepositoryRepositoryCustom {
-
-    //@Query(value = "select id, name from repositories", nativeQuery = true)
-	//public List<Repository> findAll();
 }
