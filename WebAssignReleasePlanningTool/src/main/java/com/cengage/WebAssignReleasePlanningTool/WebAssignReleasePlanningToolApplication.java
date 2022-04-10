@@ -30,7 +30,13 @@ public class WebAssignReleasePlanningToolApplication implements CommandLineRunne
         List<Repository> test = reprep.findAll();
         for(Repository r : test)
         {
-        	System.out.println(r);
+        	System.out.print(r.getName() + " deps: ");
+        	for(Repository d : r.getDependents())
+        	{
+        		System.out.print(d.getName() + " ");
+        	}
+        	
+        	System.out.println();
         }
         
     }

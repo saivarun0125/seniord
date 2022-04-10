@@ -30,6 +30,16 @@ public class Repository {
 		dependents = new ArrayList<Repository>();
 	}
 	
+	public void setId(int _id)
+	{
+		id = _id;
+	}
+	
+	public int getId()
+	{
+		return id;
+	}
+	
 	public void setName(String _name)
 	{
 		name = _name;
