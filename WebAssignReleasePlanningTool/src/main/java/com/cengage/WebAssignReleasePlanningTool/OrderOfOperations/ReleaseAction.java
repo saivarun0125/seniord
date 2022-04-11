@@ -15,7 +15,8 @@ public class ReleaseAction {
     }
 
     public ReleaseAction ( final String name, final Time duration ) {
-
+    	setName(name);
+    	setDuration(duration);
     }
 
     public String getName () {

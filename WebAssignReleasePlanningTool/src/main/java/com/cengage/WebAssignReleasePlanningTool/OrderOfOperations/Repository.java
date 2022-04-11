@@ -24,13 +24,13 @@ public class Repository {
 		dependents = new ArrayList<Repository>();
 	}
 	
-	public Repository(String _name)
+	public Repository(final String _name)
 	{
 		setName(_name);
 		dependents = new ArrayList<Repository>();
 	}
 	
-	public void setId(int _id)
+	public void setId(final int _id)
 	{
 		id = _id;
 	}
@@ -40,7 +40,7 @@ public class Repository {
 		return id;
 	}
 	
-	public void setName(String _name)
+	public void setName(final String _name)
 	{
 		name = _name;
 	}
@@ -50,7 +50,7 @@ public class Repository {
 		return name;
 	}
 	
-	public void addDependent(Repository repository)
+	public void addDependent(final Repository repository)
 	{
 		dependents.add(repository);
 	}
@@ -60,7 +60,7 @@ public class Repository {
 		return dependents;
 	}
 	
-	public void removeDependent(Repository repository)
+	public void removeDependent(final Repository repository)
 	{
 		dependents.remove(repository);
 	}

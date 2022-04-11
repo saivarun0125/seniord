@@ -1,13 +1,15 @@
 package com.cengage.WebAssignReleasePlanningTool.OrderOfOperations;
 
-//TODO: make this inherit ReleaseAction when it is added
-public class RepositoryReleaseAction {
+import java.sql.Time;
+
+public class RepositoryReleaseAction extends ReleaseAction {
 
 	Repository repository;
 	RepositoryAction action;
 	
-	public RepositoryReleaseAction(Repository _repository, RepositoryAction _action)
+	public RepositoryReleaseAction(final String _name, final Time _duration, final Repository _repository, final RepositoryAction _action)
 	{
+		super(_name, _duration);
 		setRepository(_repository);
 		setAction(_action);
 	}
@@ -17,7 +19,7 @@ public class RepositoryReleaseAction {
 		return repository;
 	}
 	
-	public void setRepository(Repository _repository)
+	public void setRepository(final Repository _repository)
 	{
 		repository = _repository;
 	}
@@ -27,7 +29,7 @@ public class RepositoryReleaseAction {
 		return action;
 	}
 	
-	public void setAction(RepositoryAction _action)
+	public void setAction(final RepositoryAction _action)
 	{
 		action = _action;
 	}
