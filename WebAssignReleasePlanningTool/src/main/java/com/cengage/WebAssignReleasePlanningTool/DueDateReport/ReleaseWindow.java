@@ -52,22 +52,17 @@ public class ReleaseWindow implements Comparable<ReleaseWindow>
 	@Override
 	public int compareTo(ReleaseWindow other)
 	{
-		//get the score for each window as well
-		double thisScore = 0;
-		double otherScore = 0;
-		
-		if(priorityScore == 0)
+		if(priorityScore <= 0)
 			calculateScore();
-		if(other.priorityScore == 0)
+		if(other.priorityScore <= 0)
 			other.calculateScore();
 		
-		thisScore = priorityScore;
-		otherScore = other.priorityScore;
+		//System.out.println(priorityScore);
 		
 		//otherwise, compare by priority sore
-		if(thisScore > otherScore)
+		if(priorityScore > other.priorityScore)
 			return 1;
-		else if (otherScore > thisScore)
+		else if (other.priorityScore > priorityScore)
 			return -1;
 		
 		return 0;
@@ -75,6 +70,7 @@ public class ReleaseWindow implements Comparable<ReleaseWindow>
 	
 	public void calculateScore()
 	{
+		//System.out.println(assignments.size());
 		priorityScore = 0;
 		for(Assignment a : assignments)
 		{
@@ -115,6 +111,7 @@ public class ReleaseWindow implements Comparable<ReleaseWindow>
 			scoreAdd *= a.getRosterCount();
 			
 			priorityScore += scoreAdd;
+			//System.out.println(priorityScore);
 		}
 	}
 }

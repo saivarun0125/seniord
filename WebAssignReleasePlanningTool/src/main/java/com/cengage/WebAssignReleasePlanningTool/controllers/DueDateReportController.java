@@ -7,9 +7,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -35,7 +38,7 @@ public class DueDateReportController {
     
     public static int PERCENT_THRESH = 10;
     
-	public static int JOIN_SCORE_PERCENT_RANGE = 5;
+	public static int JOIN_SCORE_PERCENT_RANGE = 15;
     
     @GetMapping("/duedatereport")
     public Map getDueDateReport(String startDate, String endDate, int duration)
@@ -43,10 +46,12 @@ public class DueDateReportController {
     	List<Assignment> assignments = assignmentRespository.findByDateRange(startDate, endDate);
     	
     	List<ReleaseWindow> windows = null;
-    	try {
+    	try
+    	{
 			windows = generateReleaseWindows(startDate, endDate, duration);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
+		} 
+    	catch (ParseException e)
+    	{
 			e.printStackTrace();
 		}
     	
@@ -155,13 +160,11 @@ public class DueDateReportController {
     
     private List<ReleaseWindow> generateReleaseWindows(String startDate, String endDate, int duration) throws ParseException
     {
-    	System.out.println(startDate);
-    	System.out.println(endDate);
-    	
+  	
     	List<Assignment> assignments = assignmentRespository.findByDateRange(startDate, endDate);
     	
     	//generate release windows
-    	List<ReleaseWindow> windows = new ArrayList<ReleaseWindow>();
+    	PriorityQueue<ReleaseWindow> windows = new PriorityQueue<ReleaseWindow>();
     	
     	Date windowStart = new SimpleDateFormat(DATE_FORMAT).parse(startDate);
 		windowStart.setMinutes(windowStart.getMinutes() + windowStart.getMinutes() % 15); //round up start to 15 minute mark
@@ -172,6 +175,7 @@ public class DueDateReportController {
 		while(windowEnd.compareTo(end) <= 0)
 		{
 			ReleaseWindow rw = new ReleaseWindow(windowStart, windowEnd);
+			addAssignmentsForWindow(rw, assignments);
 			
 			windows.add(rw);
 			
@@ -179,135 +183,132 @@ public class DueDateReportController {
 			windowEnd = new Date(windowEnd.getTime() + 15 * MILLISECONDS_IN_MINUTE);
 		}
     	
-    	windows = orderReleaseWindowsByPriority(windows, assignments);
+
+		//add the top % or release windows to a list
+    	int topCount = windows.size() / (100 / PERCENT_THRESH);
     	
-    	windows = windows.subList(0, windows.size() / (100 / PERCENT_THRESH));
+    	List<ReleaseWindow> topList = new ArrayList<ReleaseWindow>();
     	
-    	return joinReleaseWindows(windows);
+    	for(int i = 0; i < topCount; i++)
+    	{
+    		topList.add(windows.poll());
+    	}
+    	
+    	return joinReleaseWindows(topList, windows);
     }
-    
-    /**
-	 * Takes in an unordered list of release windows and puts them in order
-	 * @param inList an unordered list of release windows to be ordered
-	 * @return an ordered list of release windows
-	 */
-	private List<ReleaseWindow> orderReleaseWindowsByPriority(List<ReleaseWindow> inList, List<Assignment> assignments)
-	{		
-		//LinkedHashMap<ReleaseWindow, List<Assignment>> dict = new LinkedHashMap<ReleaseWindow, List<Assignment>>();
-		
-		//initialize assignment lists
-		for(ReleaseWindow rw : inList)
-		{			
-			//add all assignments in the time window
-			for(Assignment a : assignments)
-			{
-				if((a.getStartDate().compareTo(rw.startDate) <= 0 && a.getEndDate().compareTo(rw.startDate) >= 0)
+	
+	private void addAssignmentsForWindow(ReleaseWindow rw, List<Assignment> assignments)
+	{
+		for(Assignment a : assignments)
+		{
+			if((a.getStartDate().compareTo(rw.startDate) <= 0 && a.getEndDate().compareTo(rw.startDate) >= 0)
 					|| (a.getStartDate().compareTo(rw.endDate) <= 0 && a.getEndDate().compareTo(rw.endDate) >= 0))
 				{
 					rw.assignments.add(a);
 				}
-			}
-		}
-		
-		//sort list
-		Collections.sort(inList);
-		
-		return inList;
+		}		
 	}
 	
-	private List<ReleaseWindow> joinReleaseWindows(List<ReleaseWindow> inList)
-	{
-		List<ReleaseWindow> outList = new ArrayList<ReleaseWindow>();
+	private List<ReleaseWindow> joinReleaseWindows(List<ReleaseWindow> inList, Queue<ReleaseWindow> fullList)
+	{		
 		
+		List<ReleaseWindow> newList = new ArrayList<ReleaseWindow>();
+		
+		//first join similar inlist windows
 		while(inList.size() > 0)
-    	{
-    		ReleaseWindow curr = inList.get(0);
-    		boolean joined = false;
-    		
-    		double joinUpperBound = curr.priorityScore + curr.priorityScore * JOIN_SCORE_PERCENT_RANGE;
-    		double joinLowerBound = curr.priorityScore - curr.priorityScore * JOIN_SCORE_PERCENT_RANGE;
-
-    		//check if we can join to an already existing window
-    		for(ReleaseWindow rw : outList)
-    		{
-    			if(rw.priorityScore > joinUpperBound || rw.priorityScore < joinLowerBound)
-    			{
-    				continue;
-    			}
-    			if(curr.endDate.compareTo(rw.startDate) >= 0 && curr.endDate.compareTo(rw.endDate) <= 0 && curr.startDate.compareTo(rw.startDate) <= 0)
-    			{
-    				rw.setStartDate(curr.startDate);
-    				rw.assignments = Stream.concat(curr.assignments.stream(), rw.assignments.stream()).collect(Collectors.toList());;
-    				joined = true;
-    				break;
-    			}
-    			else if (curr.startDate.compareTo(rw.startDate) >= 0 && curr.startDate.compareTo(rw.endDate) <= 0 && curr.endDate.compareTo(rw.endDate) >= 0)
-    			{
-    				rw.setEndDate(curr.endDate);
-    				rw.assignments = Stream.concat(curr.assignments.stream(), rw.assignments.stream()).collect(Collectors.toList());
-    				joined = true;
-    				break;
-    			}
-    			else if (curr.startDate.compareTo(rw.startDate) >= 0 && curr.endDate.compareTo(rw.endDate) <= 0)
-    			{
-    				rw.assignments = Stream.concat(curr.assignments.stream(), rw.assignments.stream()).collect(Collectors.toList());
-    				joined = true;
-    				break;
-    			}
-    		}
-    		
-    		//otherwise make a new one
-    		if(!joined)
-    		{
-    			outList.add(curr);
-    		}
-    		
-    		inList.remove(0);
-    	}
-		
-		//clean list
-		for(int i = 0; i < outList.size(); i++)
 		{
-    		double joinUpperBound = outList.get(i).priorityScore + outList.get(i).priorityScore * JOIN_SCORE_PERCENT_RANGE;
-    		double joinLowerBound = outList.get(i).priorityScore - outList.get(i).priorityScore * JOIN_SCORE_PERCENT_RANGE;
-    		
-			for(int j = 0; j < outList.size(); j++)
-			{
-				if(i == j || outList.get(j).priorityScore > joinUpperBound ||outList.get(j).priorityScore < joinLowerBound)
+			ReleaseWindow curr = inList.get(0);
+			
+			double joinUpperBound = curr.priorityScore + curr.priorityScore * (100 / JOIN_SCORE_PERCENT_RANGE);
+			double joinLowerBound = curr.priorityScore - curr.priorityScore * (100 / JOIN_SCORE_PERCENT_RANGE);
+			
+			//check if there's already a rw we can join
+			boolean joined = false;
+			for(ReleaseWindow rw : newList)
+			{				
+				if(rw.priorityScore > joinUpperBound || rw.priorityScore < joinLowerBound)
 				{
 					continue;
 				}
 				
-				//range is a subset of other range
-				if(outList.get(i).getStartDate().compareTo(outList.get(j).getStartDate()) >= 0
-					&& outList.get(i).getEndDate().compareTo(outList.get(j).getEndDate()) <= 0)
-				{
-					outList.remove(i);
-					if(i > 0)
-						i--;
-					if(j > 0)
-						j--;
-				}
+    			//check left endpoint
+    			if(curr.getStartDate().compareTo(rw.getStartDate()) >= 0 
+    					&& curr.getStartDate().compareTo(rw.getEndDate()) <= 0
+    					&& curr.getEndDate().compareTo(rw.getEndDate()) >= 0)
+    			{
+    				rw.setEndDate(curr.getEndDate());
+    				joined = true;
+    			}
+    			//check right endpoint
+    			else if (curr.getEndDate().compareTo(rw.getStartDate()) >= 0
+    					&& curr.getStartDate().compareTo(rw.getEndDate()) <= 0
+    					&& curr.getStartDate().compareTo(rw.getStartDate()) <= 0)
+    			{
+    				rw.setStartDate(curr.getStartDate());
+    				joined = true;
+    			}
+			}
+	
+			if(!joined)
+			{
+				newList.add(curr);
+			}
+			inList.remove(0);
+		}
+		
+		inList = newList;
+		
+		//then extend the windows with any "close enough" windows from the full list
+		for(ReleaseWindow rw : inList)
+		{
+			double joinUpperBound = rw.priorityScore + rw.priorityScore * (100 / JOIN_SCORE_PERCENT_RANGE);
+			double joinLowerBound = rw.priorityScore - rw.priorityScore * (100 / JOIN_SCORE_PERCENT_RANGE);
+    		
+			for(ReleaseWindow o : fullList)
+    		{
+    			if(o.priorityScore > joinUpperBound || o.priorityScore < joinLowerBound)
+    			{
+    				continue;
+    			}
+    			
+    			//check left endpoint
+    			if(o.getStartDate().compareTo(rw.getStartDate()) >= 0 
+    					&& o.getStartDate().compareTo(rw.getEndDate()) <= 0
+    					&& o.getEndDate().compareTo(rw.getEndDate()) >= 0)
+    			{
+    				rw.setEndDate(o.getEndDate());
+    			}
+    			//check right endpoint
+    			else if (o.getEndDate().compareTo(rw.getStartDate()) >= 0
+    					&& o.getStartDate().compareTo(rw.getEndDate()) <= 0
+    					&& o.getStartDate().compareTo(rw.getStartDate()) <= 0)
+    			{
+    				rw.setStartDate(o.getStartDate());
+    			}
+    		}
+		}
+		
+		//remove subsets
+		for(int i = 0; i < newList.size(); i++)
+		{
+			ReleaseWindow rw = newList.get(i);
+			//delete o if it's a subset
+			for(int j = 0; j < newList.size(); j++)
+			{
+				if(i == j)
+					continue;
 				
-				else if(outList.get(i).getStartDate().compareTo(outList.get(j).getStartDate()) >= 0
-						&& outList.get(i).getStartDate().compareTo(outList.get(j).getEndDate()) <= 0)
+				ReleaseWindow o = newList.get(j);
+				
+				if(o.getStartDate().compareTo(rw.getStartDate()) >= 0
+						&& o.getEndDate().compareTo(rw.getEndDate()) <= 0)
 				{
-					if(outList.get(i).getEndDate().compareTo(outList.get(j).getEndDate()) >= 0)
-					{
-						outList.get(j).setEndDate(outList.get(i).getEndDate());
-						outList.get(j).assignments = Stream.concat(outList.get(j).assignments.stream(), outList.get(i).assignments.stream()).collect(Collectors.toList());
-					}
-					
-					outList.remove(i);
-					if(i > 0)
-						i--;
-					if(j > 0)
-						j--;
+					newList.remove(j);
+					j--;
 				}
 			}
 		}
 		
-		Collections.sort(outList);
-		return outList;
+		return newList;
 	}
 }
