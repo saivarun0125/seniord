@@ -35,19 +35,19 @@ public class ReleaseActionController {
 
     @Modifying
     @PutMapping ( "/release/action/{id}" )
-    public void updateReleaseAction ( @PathVariable final int id, @RequestParam final int releaseId,
+    public void updateReleaseAction ( @PathVariable final int id, @RequestParam final int releaseId, @RequestParam final String name,
             @RequestParam final int rollback, @RequestParam final boolean isSelected, @RequestParam final String notes,
             @RequestParam final int duration ) {
-        releaseActionRepository.updateById( id, releaseId, rollback, isSelected, notes, duration );
+        releaseActionRepository.updateById( id, releaseId, rollback, isSelected, notes, duration, name );
         System.out.println( "ReleaseAction " + id + " updated!" );
     }
 
     @Modifying
     @PostMapping ( "/release/action/{id}" )
-    public void createReleaseAction ( @PathVariable final int id, @RequestParam final int releaseId,
+    public void createReleaseAction ( @PathVariable final int id, @RequestParam final int releaseId, @RequestParam final String name,
             @RequestParam final int rollback, @RequestParam final boolean isSelected, @RequestParam final String notes,
             @RequestParam final int duration ) {
-        releaseActionRepository.CreateReleaseAction( id, releaseId, rollback, isSelected, notes, duration );
+        releaseActionRepository.CreateReleaseAction( id, releaseId, rollback, isSelected, notes, duration, name );
         System.out.println( "ReleaseAction " + id + " created!" );
     }
 }

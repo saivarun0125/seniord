@@ -18,24 +18,26 @@ public interface ReleaseActionRepository extends JpaRepository<ReleaseAction, In
             nativeQuery = true )
     public List<ReleaseAction> findAll ();
 
-    @Query ( value = "select id, releaseId, rollback, isSelected, notes, duration from releaseaction where id = :id",
+    @Query ( value = "select 0 as dtype, name, id, releaseId, rollback, isSelected, notes, duration from releaseaction where id = :id",
             nativeQuery = true )
     public List<ReleaseAction> findById ( @Param ( "id" ) int id );
 
     @Transactional
     @Modifying
-    @Query ( value = "UPDATE releaseaction set releaseId = :releaseId, rollback = :rollback, isSelected = :isSelected, notes = :notes, duration = :duration, updateDate = CURRENT_TIMESTAMP where id = :id",
+    @Query ( value = "UPDATE releaseaction set name = :name, releaseId = :releaseId, rollback = :rollback, isSelected = :isSelected, notes = :notes, duration = :duration, updateDate = CURRENT_TIMESTAMP where id = :id",
             nativeQuery = true )
     public int updateById ( @Param ( "id" ) int id, @Param ( "releaseId" ) int releaseId,
             @Param ( "rollback" ) int rollback, @Param ( "isSelected" ) boolean isSelected,
-            @Param ( "notes" ) String notes, @Param ( "duration" ) int duration );
+            @Param ( "notes" ) String notes, @Param ( "duration" ) int duration,
+            @Param ( "name" ) String name);
 
     @Transactional
     @Modifying
-    @Query ( value = "INSERT INTO releaseaction (id, releaseId, rollback, isSelected, notes, duration, createDate, updateDate)"
-            + "VALUES (:id, :releaseId, :rollback, :isSelected, :notes, :duration, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)",
+    @Query ( value = "INSERT INTO releaseaction (id, name, releaseId, rollback, isSelected, notes, duration, createDate, updateDate)"
+            + "VALUES (:id, :name, :releaseId, :rollback, :isSelected, :notes, :duration, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)",
             nativeQuery = true )
     public int CreateReleaseAction ( @Param ( "id" ) int id, @Param ( "releaseId" ) int releaseId,
             @Param ( "rollback" ) int rollback, @Param ( "isSelected" ) boolean isSelected,
-            @Param ( "notes" ) String notes, @Param ( "duration" ) int duration );
+            @Param ( "notes" ) String notes, @Param ( "duration" ) int duration,
+            @Param ( "name" ) String name);
 }
