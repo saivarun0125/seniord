@@ -6,10 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cengage.WebAssignReleasePlanningTool.OrderOfOperations.Release;
 
+@Repository
 public interface ReleaseRepository extends JpaRepository<Release, Integer>{
 	
 	@Query(value="select id, name from releases", nativeQuery=true)

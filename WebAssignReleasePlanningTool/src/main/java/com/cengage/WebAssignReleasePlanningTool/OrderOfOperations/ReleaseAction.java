@@ -2,12 +2,23 @@ package com.cengage.WebAssignReleasePlanningTool.OrderOfOperations;
 
 import java.sql.Time;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+@Entity
+@Table(name = "releaseaction")
 public class ReleaseAction {
 
+	@Id
+	private int id;
     private String        name;
     private String        notes;
     private Time          duration;
+    @Transient
     private ReleaseAction rollback;
+    @Transient
     private boolean       isSelected;
 
     public ReleaseAction () {
