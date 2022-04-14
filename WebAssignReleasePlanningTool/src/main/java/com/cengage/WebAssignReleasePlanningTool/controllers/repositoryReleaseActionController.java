@@ -19,8 +19,7 @@ public class repositoryReleaseActionController {
 
     @GetMapping ( "/repositoryreleaseaction" )
     public List<RepositoryReleaseAction> getRepositoryReleaseActions () {
-
-        return RepositoryReleaseAction.findAll();
+        return repositoryReleaseActionRepository.findAll();
     }
 
 }

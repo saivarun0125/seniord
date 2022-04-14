@@ -26,10 +26,7 @@ public class RepositoryRepositoryImpl  implements RepositoryRepositoryCustom {
 		CriteriaQuery<Repository> query = cb.createQuery(Repository.class);
 		Root<Repository> repository = query.from(Repository.class);
 		
-		query.select(repository);
-		
-		List<Tuple> relations = new ArrayList<Tuple>();
-		
+		query.select(repository);		
 		
 		List<Repository> reps =  entityManager.createQuery(query).getResultList();
 		
