@@ -26,11 +26,12 @@ CREATE TABLE `releaseaction` (
   `id` int unsigned DEFAULT NULL,
   `releaseId` int unsigned DEFAULT NULL,
   `rollback` int unsigned DEFAULT NULL,
-  `isSelected` boolean DEFAULT NULL,
+  `isSelected` tinyint(1) DEFAULT NULL,
   `notes` varchar(256) DEFAULT NULL,
   `duration` int unsigned DEFAULT NULL,
   `createDate` timestamp NULL DEFAULT NULL,
-  `updateDate` timestamp NULL DEFAULT NULL
+  `updateDate` timestamp NULL DEFAULT NULL,
+  `name` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -38,10 +39,9 @@ CREATE TABLE `releaseaction` (
 -- Dumping data for table `releaseaction`
 --
 
-LOCK TABLES `releaseaction` WRITE;f
+LOCK TABLES `releaseaction` WRITE;
 /*!40000 ALTER TABLE `releaseaction` DISABLE KEYS */;
-INSERT INTO `releaseaction` VALUES (0,1,0,TRUE,'hi',15,'2022-04-05 13:17:40','2022-04-05 13:17:40'),(1,1,0,TRUE,'hi',15,'2022-04-05 13:17:40','2022-04-05 13:17:40'),
-(2,1,0,TRUE,'hi',15,'2022-04-05 13:17:40','2022-04-05 13:17:40');
+INSERT INTO `releaseaction` VALUES (0,1,0,1,'hi',15,'2022-04-05 13:17:40','2022-04-05 13:17:40','Action A'),(1,1,0,1,'hi',15,'2022-04-05 13:17:40','2022-04-05 13:17:40','Action B'),(2,1,0,1,'hi',15,'2022-04-05 13:17:40','2022-04-05 13:17:40','Action C');
 /*!40000 ALTER TABLE `releaseaction` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -54,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-04-12  9:12:17
+-- Dump completed on 2022-04-14 12:11:02

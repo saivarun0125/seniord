@@ -11,11 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cengage.WebAssignReleasePlanningTool.OrderOfOperations.ReleaseAction;
 
-@Repository
 public interface ReleaseActionRepository extends JpaRepository<ReleaseAction, Integer> {
 
     @Override
-    @Query ( value = "select id, releaseId, rollback, isSelected, notes, duration from releaseaction",
+    @Query ( value = "select 0 as dtype, name, id, releaseId, rollback, isSelected, notes, duration from releaseaction",
             nativeQuery = true )
     public List<ReleaseAction> findAll ();
 

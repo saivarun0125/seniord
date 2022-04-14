@@ -2,6 +2,7 @@ package com.cengage.WebAssignReleasePlanningTool.OrderOfOperations;
 
 import java.sql.Time;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -9,13 +10,14 @@ import javax.persistence.Transient;
 
 @Entity
 @Table(name = "releaseaction")
+@DiscriminatorValue("0")
 public class ReleaseAction {
 
 	@Id
 	private int id;
     private String        name;
     private String        notes;
-    private Time          duration;
+    private int          duration;
     @Transient
     private ReleaseAction rollback;
     @Transient
@@ -25,7 +27,7 @@ public class ReleaseAction {
 
     }
 
-    public ReleaseAction ( final String name, final Time duration ) {
+    public ReleaseAction ( final String name, final int duration ) {
     	setName(name);
     	setDuration(duration);
     }
@@ -46,11 +48,11 @@ public class ReleaseAction {
         this.notes = notes;
     }
 
-    public Time getDuration () {
+    public int getDuration () {
         return duration;
     }
 
-    public void setDuration ( final Time duration ) {
+    public void setDuration ( final int duration ) {
         this.duration = duration;
     }
 

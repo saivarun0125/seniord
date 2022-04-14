@@ -3,6 +3,7 @@ package com.cengage.WebAssignReleasePlanningTool.OrderOfOperations;
 import java.sql.Time;
 import java.util.List;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -15,7 +16,12 @@ public class RepositoryReleaseAction extends ReleaseAction {
 	@Transient
 	RepositoryAction action;
 	
-	public RepositoryReleaseAction(final String _name, final Time _duration, final Repository _repository, final RepositoryAction _action)
+	public RepositoryReleaseAction()
+	{
+		
+	}
+	
+	public RepositoryReleaseAction(final String _name, final int _duration, final Repository _repository, final RepositoryAction _action)
 	{
 		super(_name, _duration);
 		setRepository(_repository);
