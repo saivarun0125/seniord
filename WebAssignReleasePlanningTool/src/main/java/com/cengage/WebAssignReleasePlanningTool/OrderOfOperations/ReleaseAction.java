@@ -31,6 +31,16 @@ public class ReleaseAction {
     	setName(name);
     	setDuration(duration);
     }
+    
+    public int getId()
+    {
+    	return id;
+    }
+    
+    public void setId(final int _id)
+    {
+    	id = _id;
+    }
 
     public String getName () {
         return name;
