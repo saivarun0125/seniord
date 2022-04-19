@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = WebAssignReleasePlanningToolApplication.class)
 @WebAppConfiguration
-public class AssignmentControllerTest {
+public class ReleaseControllerTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
     MockMvc mockMvc;
@@ -41,16 +41,27 @@ public class AssignmentControllerTest {
     
    @Test
    public void getAssignments() throws Exception {
+	   //get all releases
 	   mockMvc.perform(MockMvcRequestBuilders
-	            .get("/assignment"))
+	            .get("/release"))
+	            .andExpect(status().isOk())
+	            .andExpect(content()
+	            	      .contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+	   //get specific release
+	   mockMvc.perform(MockMvcRequestBuilders
+	            .get("/release/0"))
 	            .andExpect(status().isOk())
 	            .andExpect(content()
 	            	      .contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
 	   
+	   //add release
 	   mockMvc.perform(MockMvcRequestBuilders
-            .get("/assignment/Projectiles"))
-            .andExpect(status().isOk())
-            .andExpect(content()
-            	      .contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+	            .post("/release/5?name=Test Release"))
+	            .andExpect(status().isOk());
+	   
+	   //modify release
+	   mockMvc.perform(MockMvcRequestBuilders
+	            .put("/release/5?name=Test Release Modified"))
+	            .andExpect(status().isOk());
    }
 }
