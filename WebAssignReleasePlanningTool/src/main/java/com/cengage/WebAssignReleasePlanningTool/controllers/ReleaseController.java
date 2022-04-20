@@ -60,9 +60,9 @@ public class ReleaseController {
     	for(ReleaseAction ra : release.getReleaseActions())
     	{
     		Map<String, Object> raMap = new LinkedHashMap<String, Object>();
-    		map.put("name", ra.getName());
-    		map.put("id", ra.getId());
-    		map.put("isSelected", ra.isSelected());
+    		raMap.put("name", ra.getName());
+    		raMap.put("id", ra.getId());
+    		raMap.put("isSelected", ra.isSelected());
     		releaseActions.add(raMap);
     	}
     	map.put("releaseActions", releaseActions);
@@ -72,9 +72,9 @@ public class ReleaseController {
     	for(ReleaseAction ra : release.getRollbackActions())
     	{
     		Map<String, Object> rbMap = new LinkedHashMap<String, Object>();
-    		map.put("name", ra.getName());
-    		map.put("id", ra.getId());
-    		map.put("isSelected", ra.isSelected());
+    		rbMap.put("name", ra.getName());
+    		rbMap.put("id", ra.getId());
+    		rbMap.put("isSelected", ra.isSelected());
     		rollbackActions.add(rbMap);
     	}
     	map.put("rollbackActions", rollbackActions);
