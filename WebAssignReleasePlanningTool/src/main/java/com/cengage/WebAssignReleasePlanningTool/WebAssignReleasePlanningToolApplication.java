@@ -8,32 +8,37 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.cengage.WebAssignReleasePlanningTool.DueDateReport.Assignment;
+import com.cengage.WebAssignReleasePlanningTool.OrderOfOperations.Release;
+import com.cengage.WebAssignReleasePlanningTool.OrderOfOperations.ReleaseAction;
 import com.cengage.WebAssignReleasePlanningTool.OrderOfOperations.Repository;
 import com.cengage.WebAssignReleasePlanningTool.repositories.AssignmentRepository;
+import com.cengage.WebAssignReleasePlanningTool.repositories.ReleaseRepository;
 import com.cengage.WebAssignReleasePlanningTool.repositories.RepositoryRepository;
 
 @SpringBootApplication
 public class WebAssignReleasePlanningToolApplication implements CommandLineRunner {
  
     @Autowired
-    AssignmentRepository repository;
-    
-    @Autowired
-    RepositoryRepository reprep;
-     
+    ReleaseRepository repository;
     public static void main(String[] args) {
         SpringApplication.run(WebAssignReleasePlanningToolApplication.class, args);
     }
  
     @Override
     public void run(String... args) throws Exception {
-        List<Repository> test = reprep.findAll();
-        for(Repository r : test)
+        List<Release> test = repository.findById(0);
+        
+        for(Release r : test)
         {
-        	System.out.print(r.getName() + " deps: ");
-        	for(Repository d : r.getDependents())
+        	System.out.println("Release: " + r.getName());
+        	for(ReleaseAction ra : r.getReleaseActions())
         	{
-        		System.out.print(d.getName() + " ");
+        		System.out.println("\tAction: " + ra.getName());
+        	}
+        	
+        	for(ReleaseAction ra : r.getRollbackActions())
+        	{
+        		System.out.println("\tRollback: " + ra.getName());
         	}
         	
         	System.out.println();

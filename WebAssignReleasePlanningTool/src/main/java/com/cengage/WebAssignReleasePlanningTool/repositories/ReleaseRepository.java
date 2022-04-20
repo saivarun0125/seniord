@@ -12,15 +12,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cengage.WebAssignReleasePlanningTool.OrderOfOperations.Release;
 
 @Repository
-public interface ReleaseRepository extends JpaRepository<Release, Integer>{
+public interface ReleaseRepository extends JpaRepository<Release, Integer>, ReleaseRepositoryCustom {
 	
-	@Query(value="select id, name from releases", nativeQuery=true)
-	public List<Release> findAll();
-	
-	@Query(value="select id, name from releases where id = :id", nativeQuery=true)
-	public List<Release> findById(@Param("id") int id);
+//	@Query(value="select id, name from releases", nativeQuery=true)
+//	public List<Release> findAll();
+//	
+//	@Query(value="select id, name from releases where id = :id", nativeQuery=true)
+//	public List<Release> findById(@Param("id") int id);
 
-	@Transactional
 	@Modifying
 	@Query(value="UPDATE releases set name = :name, updateDate = CURRENT_TIMESTAMP where id = :id", nativeQuery=true)
 	public int updateById(@Param("id")int id, @Param("name") String name);

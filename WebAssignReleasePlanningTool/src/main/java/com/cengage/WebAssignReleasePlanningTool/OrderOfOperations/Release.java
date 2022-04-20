@@ -60,6 +60,12 @@ public class Release {
     }
 
     public int getDuration () {
-        return 0;
+        int dur = 0;
+    	for(ReleaseAction ra : releaseActions)
+    	{
+    		dur += ra.getDuration();
+    	}
+    	
+    	return dur;
     }
 }

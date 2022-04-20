@@ -25,7 +25,12 @@ class ReleaseTest {
 		r.setId(0);
 		assertEquals(0, r.getId());
 		
-		//TODO: test adding actions
+		//test adding actions
+		r.getReleaseActions().add(new ReleaseAction("test action", 999));
+		assertEquals(1, r.getReleaseActions().size());
+		assertEquals(999, r.getDuration());
+		r.getReleaseActions().add(new ReleaseAction("another test action", 1));
+		assertEquals(1000, r.getDuration());
 	}
 
 }
