@@ -78,6 +78,7 @@ public class ReleaseController {
     		rollbackActions.add(rbMap);
     	}
     	map.put("rollbackActions", rollbackActions);
+    	map.put("duration", release.getDuration());
     	
     	return map;
     }
