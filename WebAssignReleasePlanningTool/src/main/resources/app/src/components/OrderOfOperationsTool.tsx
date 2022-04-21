@@ -10,6 +10,7 @@ import {
     Flex, 
     FlexBehavior
 } from 'react-magma-dom';
+import Release from "./Release";
 
 export interface Release {
     name: String,
@@ -17,37 +18,21 @@ export interface Release {
 }
 
 export default function OrderOfOperationsTool() {
-
-    const emptyRelease: Release = {
-        name: '',
-        id: ''
-    };
-
-    const [isLoading, setIsLoading] = useState(false);
+    const [redirect, setRedirect] = useState(false);
+    const [releaseId, setReleaseId] = useState(null as null | String);
     const [options, setOptions] = useState([] as Release[]);
-    const [selectedRelease, setSelectedRelease] = useState(emptyRelease);
 
-    const handleSubmit = {
-        //return <Release release={selectedRelease}/>;
-    };
+    const handleCreateRelease = async () => {
+        setRedirect(true);
+    }
 
-    const dummyOptions = [
-        {
-          label: "release #1",
-          value: "25"
-        },
-        {
-          label: "release #2",
-          value: "60"
-        },
-        {
-          label: "release #3",
-          value: "45"
-        }
-      ];
+    const handleSubmit = async () => {
+        setRedirect(true);
+        console.log(releaseId);
+    }
     
     function onSelectedItemChange(changes: any) {
-        setSelectedRelease(changes.selectedItem);
+        setReleaseId(changes.selectedItem.id);
     }
     function optionsToString(item: Release) {
         return item ? `${item.name}` : '';
@@ -67,8 +52,13 @@ export default function OrderOfOperationsTool() {
                 console.log(error.message);
             });
     }
-    getReleases();
-    return(<>
+
+    React.useEffect(() => {
+        getReleases();
+    }, []);
+
+
+    var output = <>
         <Breadcrumb style={{padding:"20px"}}>
             <BreadcrumbItem to="/home">Home</BreadcrumbItem>
             <BreadcrumbItem>Order of Operations Tool</BreadcrumbItem>
@@ -78,7 +68,7 @@ export default function OrderOfOperationsTool() {
                 <Label>Create Release: </Label>
             </Flex>
             <Flex behavior={FlexBehavior.item} xs={1}>
-                    <Button> + </Button>
+                    <Button onClick={handleCreateRelease}> + </Button>
             </Flex>
             <Flex behavior={FlexBehavior.item} xs={10}>
             </Flex>
@@ -93,8 +83,14 @@ export default function OrderOfOperationsTool() {
             <Flex behavior={FlexBehavior.item} xs={10}>
             </Flex>
             <Flex behavior={FlexBehavior.item} xs={2}>
-                    <Button /*onClick={handleSubmit}*/> Submit </Button>
+                    <Button onClick={handleSubmit}> Submit </Button>
             </Flex>
         </Flex>
-    </>);
+    </>;
+
+    if(redirect) {
+        output = <Release id={releaseId} />;
+    }
+
+    return(output);
 }

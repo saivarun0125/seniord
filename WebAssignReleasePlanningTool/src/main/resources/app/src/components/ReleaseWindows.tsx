@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useState, useRef } from "react";
-//import { Modal } from 'react-bootstrap';
 import { Modal } from 'react-magma-dom';
 import moment from "moment";
 const vis = require("./../../js/vis-timeline-graph2d.min.js");
